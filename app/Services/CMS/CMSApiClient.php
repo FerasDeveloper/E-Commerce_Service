@@ -48,6 +48,22 @@ class CMSApiClient
     return $response->json()['data'];
   }
 
+  public function getCollectionById(int $collectionId): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/cms/collections/id/{$collectionId}");
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to fetch collection in CMS: " . $error);
+    }
+
+    return $response->json('data');
+  }
+
   public function getDynamicEntries(string $collectionSlug): array
   {
     $response = Http::withHeaders(

@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Domains\Offers\Repositories\Eloquent\OfferPriceRepositoryEloquent;
-use App\Domains\Offers\Repositories\Eloquent\OfferRepositorEloquent;
-use App\Domains\Offers\Repositories\Interfaces\OfferPriceRepositoryInterface;
-use App\Domains\Offers\Repositories\Interfaces\OfferRepositoryInterface;
+use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferPriceRepositoryEloquent;
+use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferRepositorEloquent;
+use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
+use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

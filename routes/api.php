@@ -10,14 +10,12 @@ Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
   // -------------------------
   Route::post('/offers', [OfferController::class, 'store']);
   Route::patch('/offers/{collectionSlug}', [OfferController::class, 'update']);
+  Route::get('/offers/{collectionSlug}', [OfferController::class, 'show']);
+  Route::get('/offers', [OfferController::class, 'index']);
 
   // -------------------------
   // Offers
   // -------------------------
-  Route::get('/offers', [OfferController::class, 'index']);
-  Route::post('/offers', [OfferController::class, 'store']);
-  Route::get('/offers/{offer}', [OfferController::class, 'show']);
-  Route::put('/offers/{offer}', [OfferController::class, 'update']);
   Route::delete('/offers/{offer}', [OfferController::class, 'destroy']);
 
   Route::get('/offers/{offer}/targets', [OfferController::class, 'targets']);
