@@ -63,4 +63,29 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
     $offer->update(['is_active' => false]);
     $offer->delete();
   }
+
+  public function deactivateOffer($collectionId): void
+  {
+    $offer = Offer::where('collection_id', $collectionId)
+      ->where('is_active', true)
+      ->first();
+
+    if ($offer) {
+      $offer->update([
+        'is_active' => false
+      ]);
+    }
+  }
+
+  public function activateOffer($collectionId): void
+  {
+    $offer = Offer::where('collection_id', $collectionId)
+      ->first();
+
+    if ($offer) {
+      $offer->update([
+        'is_active' => true
+      ]);
+    }
+  }
 }

@@ -28,11 +28,10 @@ class CreateOfferDTO
 
   public static function fromRequest(CreateOfferRequest $request): self
   {
-    $project = app('currentProject');
     $slug = Str::slug($request->name);
 
     return new self(
-      $project->id,
+      $request->project_id,
       $request->data_type_id,
       $request->name,
       $slug,

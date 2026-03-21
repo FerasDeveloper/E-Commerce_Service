@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
-use App\Domains\E_Commerce\DTOs\Offers\DeactiveOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\ActivationOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Requests\CreateOfferRequest;
-use App\Domains\E_Commerce\Requests\DeactivateOfferRequest;
+use App\Domains\E_Commerce\Requests\ActivationOfferRequest;
 use App\Domains\E_Commerce\Requests\InsertOfferItemsRequest;
 use App\Domains\E_Commerce\Requests\RemoveOfferItemsRequest;
 use App\Domains\E_Commerce\Requests\UpdateOfferRequest;
 use App\Domains\E_Commerce\Services\OfferService;
+use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
@@ -51,9 +52,9 @@ class OfferController extends Controller
     return response()->json(['data' => $offer]);
   }
 
-  public function index()
+  public function index(Request $request)
   {
-    $data = $this->service->index(app('currentProject')->id);
+    $data = $this->service->index($request->project_id);
     return response()->json(['data' => $data]);
   }
 
@@ -84,13 +85,23 @@ class OfferController extends Controller
     ]);
   }
 
-  public function deactivate(string $collectionSlug, DeactivateOfferRequest $request)
+  public function deactivate(string $collectionSlug, ActivationOfferRequest $request)
   {
-    $dto = DeactiveOfferDTO::fromRequest($collectionSlug, $request);
+    $dto = ActivationOfferDTO::fromRequest($collectionSlug, $request);
     $this->service->deactivate($dto);
 
     return response()->json([
-      'message' => 'Items removed successfully'
+      'message' => 'Offer deactivated successfully'
+    ]);
+  }
+
+  public function activate(string $collectionSlug, ActivationOfferRequest $request)
+  {
+    $dto = ActivationOfferDTO::fromRequest($collectionSlug, $request);
+    $this->service->activate($dto);
+
+    return response()->json([
+      'message' => 'Offer activated successfully'
     ]);
   }
 }

@@ -11,11 +11,7 @@ return new class extends Migration
     Schema::create('offers', function (Blueprint $table) {
       $table->id();
 
-      $table->foreignId('project_id')
-        ->constrained('projects')
-        ->cascadeOnDelete()
-        ->cascadeOnUpdate();
-
+      $table->unsignedBigInteger('project_id');
       $table->unsignedBigInteger('collection_id');
 
       $table->boolean('is_code_offer')->default(false);

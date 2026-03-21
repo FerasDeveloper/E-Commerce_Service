@@ -16,6 +16,22 @@ class CMSApiClient
     $this->baseUrl = rtrim(config('services.cms.url'), '/');
   }
 
+  public function resolveProject()
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/projects/resolve");
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to resolve project in CMS: " . $error);
+    }
+
+    return $response->json()['original'];
+  }
+
   public function createCollection(array $data): array
   {
     $response = Http::withHeaders(

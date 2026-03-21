@@ -18,9 +18,4 @@ class Offer extends Model
     'start_at' => 'datetime',
     'end_at' => 'datetime',
   ];
-
-  public function project()
-  {
-    return $this->belongsTo(Project::class);
-  }
 }

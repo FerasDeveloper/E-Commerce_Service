@@ -2,6 +2,7 @@
 
 namespace App\Domains\E_Commerce\Services;
 
+use App\Domains\E_Commerce\Actions\Offers\ActivateOfferAction;
 use App\Domains\E_Commerce\Actions\Offers\CalculatePricesAction;
 use App\Domains\E_Commerce\Actions\Offers\CreateOfferAction;
 use App\Domains\E_Commerce\Actions\Offers\DeactivateOfferAction;
@@ -14,7 +15,7 @@ use App\Domains\E_Commerce\Actions\Offers\RemoveOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateCollectionAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateOfferAction;
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
-use App\Domains\E_Commerce\DTOs\Offers\DeactiveOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\ActivationOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Read\Actions\Offers\IndexOffersAction;
@@ -39,7 +40,8 @@ class OfferService
     protected DeleteOfferAction $deleteOffer,
     protected InsertOfferItemsAction $insertItemsAction,
     protected RemoveOfferItemsAction $removeItemsAction,
-    protected DeactivateOfferAction $deactivateOffer
+    protected DeactivateOfferAction $deactivateOffer,
+    protected ActivateOfferAction $activateOffer
   ) {}
 
   public function create(CreateOfferDTO $dto): void
@@ -115,8 +117,13 @@ class OfferService
     $this->reEvaluateAction->execute($entries);
   }
 
-  public function deactivate(DeactiveOfferDTO $dto)
+  public function deactivate(ActivationOfferDTO $dto)
   {
     $this->deactivateOffer->execute($dto);
+  }
+
+  public function activate(ActivationOfferDTO $dto)
+  {
+    $this->activateOffer->execute($dto);
   }
 }

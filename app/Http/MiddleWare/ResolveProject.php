@@ -2,13 +2,16 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Project;
+use App\Services\CMS\CMSApiClient;
 use Closure;
-use Illuminate\Http\Request;
 
 class ResolveProject
 {
-  public function handle(Request $request, Closure $next)
+  public function __construct(
+    protected CMSApiClient $resolver
+  ) {}
+
+  public function handle($request, Closure $next)
   {
     $projectKey = $request->header('X-Project-Id');
 
@@ -16,13 +19,9 @@ class ResolveProject
       abort(400, 'X-Project-Id header is required');
     }
 
-    $project = Project::where('public_id', $projectKey)->first();
+    $project = $this->resolver->resolveProject();
 
-    if (!$project) {
-      abort(404, 'Project not found');
-    }
-
-    app()->instance('currentProject', $project);
+    $request->merge(['project_id' => $project['id']]);
 
     return $next($request);
   }
