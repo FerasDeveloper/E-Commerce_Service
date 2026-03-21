@@ -4,12 +4,18 @@ namespace App\Domains\E_Commerce\Services;
 
 use App\Domains\E_Commerce\Actions\Offers\CalculatePricesAction;
 use App\Domains\E_Commerce\Actions\Offers\CreateOfferAction;
+use App\Domains\E_Commerce\Actions\Offers\DeactivateOfferAction;
+use App\Domains\E_Commerce\Actions\Offers\DeleteOfferAction;
 use App\Domains\E_Commerce\Actions\Offers\DeleteOfferPricesAction;
 use App\Domains\E_Commerce\Actions\Offers\EnterOfferItemsAction;
+use App\Domains\E_Commerce\Actions\Offers\InsertOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\ReEvaluateEntryPricesAction;
+use App\Domains\E_Commerce\Actions\Offers\RemoveOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateCollectionAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateOfferAction;
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\DeactiveOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Read\Actions\Offers\IndexOffersAction;
 use App\Domains\E_Commerce\Read\Actions\Offers\ShowOfferDetailsAction;
@@ -30,6 +36,10 @@ class OfferService
     protected ReEvaluateEntryPricesAction $reEvaluateAction,
     protected ShowOfferDetailsAction $showDetailsAction,
     protected IndexOffersAction $indexAction,
+    protected DeleteOfferAction $deleteOffer,
+    protected InsertOfferItemsAction $insertItemsAction,
+    protected RemoveOfferItemsAction $removeItemsAction,
+    protected DeactivateOfferAction $deactivateOffer
   ) {}
 
   public function create(CreateOfferDTO $dto): void
@@ -82,5 +92,31 @@ class OfferService
   public function index(int $projectId)
   {
     return $this->indexAction->execute($projectId);
+  }
+
+  public function delete($collectionSlug)
+  {
+    $this->deleteOffer->execute($collectionSlug);
+  }
+
+  public function addItems(OfferItemsDTO $dto)
+  {
+    $data = $this->insertItemsAction->execute($dto);
+    if ($data['message'] === "Items added successfully" && $data['collection']['type'] === 'dynamic' && in_array($data['offer']['benefit_type'], ['percentage', 'fixed_amount'])) {
+      $entries = $this->calculateAction->execute($data);
+      $this->reEvaluateAction->execute($entries);
+    }
+  }
+
+  public function removeItems(OfferItemsDTO $dto)
+  {
+    $this->removeItemsAction->execute($dto);
+    $entries = array_map(fn($id) => ['entry_id' => $id], $dto->items);
+    $this->reEvaluateAction->execute($entries);
+  }
+
+  public function deactivate(DeactiveOfferDTO $dto)
+  {
+    $this->deactivateOffer->execute($dto);
   }
 }

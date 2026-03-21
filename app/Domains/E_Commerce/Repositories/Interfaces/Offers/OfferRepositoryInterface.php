@@ -18,4 +18,6 @@ interface OfferRepositoryInterface
   public function getOfferDetails($collectionId): Offer;
 
   public function getProjectOffers($projectId): Collection;
+
+  public function deleteOfferByCollectionId($collectionId): void;
 }

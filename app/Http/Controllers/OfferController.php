@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\DeactiveOfferDTO;
+use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Requests\CreateOfferRequest;
+use App\Domains\E_Commerce\Requests\DeactivateOfferRequest;
+use App\Domains\E_Commerce\Requests\InsertOfferItemsRequest;
+use App\Domains\E_Commerce\Requests\RemoveOfferItemsRequest;
 use App\Domains\E_Commerce\Requests\UpdateOfferRequest;
 use App\Domains\E_Commerce\Services\OfferService;
-use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
@@ -31,7 +35,7 @@ class OfferController extends Controller
     ]);
   }
 
-  public function show($collectionSlug)
+  public function show(string $collectionSlug)
   {
     $data = $this->service->show($collectionSlug);
 
@@ -53,31 +57,40 @@ class OfferController extends Controller
     return response()->json(['data' => $data]);
   }
 
-  // public function destroy(Offer $offer)
-  // {
-  //   $projectId = (int)app('currentProject')->id;
-  //   $this->service->delete($offer, $projectId);
+  public function destroy(string $collectionSlug)
+  {
+    $this->service->delete($collectionSlug);
 
-  //   return response()->json(['message' => 'Offer deleted successfully']);
-  // }
+    return response()->json(['message' => 'Offer deleted successfully']);
+  }
 
-  // public function targets(Offer $offer)
-  // {
-  //   $projectId = (int)app('currentProject')->id;
-  //   $targets = $this->service->listTargets($offer, $projectId);
+  public function addItems($collectionSlug, InsertOfferItemsRequest $request)
+  {
+    $dto = OfferItemsDTO::fromInsertRequest($collectionSlug, $request);
+    $this->service->addItems($dto);
 
-  //   return response()->json(['data' => $targets]);
-  // }
+    return response()->json([
+      'message' => 'Items added successfully',
+    ]);
+  }
 
-  // public function appliedPrice(int $entryId)
-  // {
-  //   $projectId = (int)app('currentProject')->id;
+  public function removeItems($collectionSlug, RemoveOfferItemsRequest $request)
+  {
+    $dto = OfferItemsDTO::fromRemoveRequest($collectionSlug, $request);
+    $this->service->removeItems($dto);
 
-  //   $price = OfferPrice::query()
-  //     ->where('project_id', $projectId)
-  //     ->where('entry_id', $entryId)
-  //     ->first();
+    return response()->json([
+      'message' => 'Items removed successfully'
+    ]);
+  }
 
-  //   return response()->json(['data' => $price]);
-  // }
+  public function deactivate(string $collectionSlug, DeactivateOfferRequest $request)
+  {
+    $dto = DeactiveOfferDTO::fromRequest($collectionSlug, $request);
+    $this->service->deactivate($dto);
+
+    return response()->json([
+      'message' => 'Items removed successfully'
+    ]);
+  }
 }

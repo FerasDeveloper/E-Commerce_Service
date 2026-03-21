@@ -11,4 +11,10 @@ interface OfferPriceRepositoryInterface
   public function disableItemPrice($entryId);
 
   public function deleteOfferPricesForOffer($offerId);
+
+  public function deleteOfferPrice($offerPriceId): void;
+
+  public function deleteOfferPriceForEntryAndProject(int $entryId, int $offerId): void;
+
+  public function getEntryPrice(int $entryId, int $offerId);
 }

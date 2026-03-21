@@ -2,11 +2,16 @@
 
 namespace App\Domains\E_Commerce\Actions\Offers;
 
+use App\Domains\Core\Actions\Action;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Services\CMS\CMSApiClient;
 
-class CreateOfferAction
+class CreateOfferAction extends Action
 {
+  protected function circuitServiceName(): string
+  {
+    return 'offer.create';
+  }
 
   public function __construct(
     protected CMSApiClient $cms,
@@ -15,19 +20,21 @@ class CreateOfferAction
 
   public function execute($dto)
   {
-    $response = $this->cms->createCollection($dto->CollectionToArray());
+    return $this->run(function () use ($dto) {
+      $response = $this->cms->createCollection($dto->CollectionToArray());
 
-    if (!isset($response['data'])) {
-      throw new \Exception("Failed to create collection in CMS");
-    }
+      if (!isset($response['data'])) {
+        throw new \Exception("Failed to create collection in CMS");
+      }
 
-    $collection = $response['data'];
+      $collection = $response['data'];
 
-    $offer = $this->repository->create($collection['id'], $dto->OfferToArray());
+      $offer = $this->repository->create($collection['id'], $dto->OfferToArray());
 
-    return [
-      'collection' => $collection,
-      'offer' => $offer
-    ];
+      return [
+        'collection' => $collection,
+        'offer' => $offer
+      ];
+    });
   }
 }

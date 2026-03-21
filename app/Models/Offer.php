@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Offer extends Model
 {
+  use SoftDeletes;
+  
   protected $guarded = [];
 
   protected $casts = [
@@ -21,4 +24,3 @@ class Offer extends Model
     return $this->belongsTo(Project::class);
   }
 }
-

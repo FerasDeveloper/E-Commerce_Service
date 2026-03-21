@@ -28,4 +28,21 @@ class OfferPriceRepositoryEloquent implements OfferPriceRepositoryInterface
   {
     OfferPrice::where('applied_offer_id', $offerId)->delete();
   }
+
+  public function deleteOfferPrice($offerPriceId): void
+  {
+    OfferPrice::where('id', $offerPriceId)->delete();
+  }
+
+  public function getEntryPrice(int $entryId, int $offerId)
+  {
+    return OfferPrice::where('entry_id', $entryId)->where('applied_offer_id', $offerId)->first();
+  }
+
+  public function deleteOfferPriceForEntryAndProject(int $entryId, int $offerId): void
+  {
+    $item = OfferPrice::where('entry_id', $entryId)->where('applied_offer_id', $offerId)->first();
+    if ($item)
+      $item->delete();
+  }
 }

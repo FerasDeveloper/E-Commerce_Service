@@ -11,7 +11,7 @@ class IndexOffersAction extends Action
 
   protected function circuitServiceName(): string
   {
-    return 'offer.showDetails';
+    return 'offer.index';
   }
 
   public function __construct(
@@ -21,12 +21,12 @@ class IndexOffersAction extends Action
 
   public function execute($projectId)
   {
-    // return $this->run(function () use ($collectionSlug) {
-    $offers = $this->repository->getProjectOffers($projectId);
-    foreach($offers as $offer){
-      $offer['collection'] = $this->cms->getCollectionById($offer['collection_id']);
-    }
-    return $offers;
-    // });
+    return $this->run(function () use ($projectId) {
+      $offers = $this->repository->getProjectOffers($projectId);
+      foreach ($offers as $offer) {
+        $offer['collection'] = $this->cms->getCollectionById($offer['collection_id']);
+      }
+      return $offers;
+    });
   }
 }

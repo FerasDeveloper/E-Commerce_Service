@@ -5,6 +5,7 @@ namespace App\Domains\E_Commerce\Repositories\Eloquent\Offers;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Models\Offer;
 use App\Models\OfferPrice;
+use DomainException;
 use Illuminate\Database\Eloquent\Collection;
 
 class OfferRepositorEloquent implements OfferRepositoryInterface
@@ -48,5 +49,18 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
   public function getProjectOffers($projectId): Collection
   {
     return Offer::where('project_id', $projectId)->get();
+  }
+
+  public function deleteOfferByCollectionId($collectionId): void
+  {
+    $deleted = Offer::onlyTrashed()
+      ->where('collection_id', $collectionId)
+      ->first();
+    if ($deleted) {
+      throw new DomainException("This offer was deleted previously");
+    }
+    $offer = Offer::where('collection_id', $collectionId)->first();
+    $offer->update(['is_active' => false]);
+    $offer->delete();
   }
 }

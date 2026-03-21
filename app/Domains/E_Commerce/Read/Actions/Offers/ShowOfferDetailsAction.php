@@ -21,10 +21,10 @@ class ShowOfferDetailsAction extends Action
 
   public function execute($collectionSlug)
   {
-    // return $this->run(function () use ($collectionSlug) {
-    $data['collection'] = $this->cms->getCollectionBySlug($collectionSlug);
-    $data['offer'] = $this->repository->getOfferDetails($data['collection']['id']);
-    return $data;
-    // });
+    return $this->run(function () use ($collectionSlug) {
+      $data['collection'] = $this->cms->getCollectionBySlug($collectionSlug);
+      $data['offer'] = $this->repository->getOfferDetails($data['collection']['id']);
+      return $data;
+    });
   }
 }

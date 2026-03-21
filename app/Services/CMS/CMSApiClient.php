@@ -95,4 +95,58 @@ class CMSApiClient
 
     return $response->json();
   }
+
+  public function addCollectionItems(string $collectionSlug, array $data)
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/cms/collections/{$collectionSlug}/insert", [
+      'items' => $data
+    ]);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to update collection in CMS: " . $error);
+    }
+
+    return $response->json('message');
+  }
+
+  public function removeCollectionItems(string $collectionSlug, array $data)
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->delete("{$this->baseUrl}/api/cms/collections/{$collectionSlug}/items", [
+      'items' => $data
+    ]);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to update collection in CMS: " . $error);
+    }
+
+    return $response->json('message');
+  }
+
+  public function deactivationCollection(string $collectionSlug, bool $is_active)
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->patch("{$this->baseUrl}/api/cms/collections/{$collectionSlug}/deactivate", [
+      'is_active' => $is_active
+    ]);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to update collection in CMS: " . $error);
+    }
+
+    return $response->json('message');
+  }
 }
