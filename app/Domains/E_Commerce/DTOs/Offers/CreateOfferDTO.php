@@ -73,7 +73,11 @@ class CreateOfferDTO
       'project_id' => $this->project_id,
       'is_code_offer' => $this->is_code_offer,
       'offer_duration' => $this->offer_duration ?? null,
-      'code' => $this->is_code_offer ? Str::random(8) : null,
+      'code' => $this->is_code_offer
+        ? collect(str_split('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'))
+        ->random(8)
+        ->implode('')
+        : null,
       'benefit_type' => $this->benefit_type,
       'benefit_config' => $this->benefit_config,
       'start_at' => $this->start_at ?? null,

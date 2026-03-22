@@ -4,7 +4,7 @@ use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
+Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(function () {
   // -------------------------
   // Offers
   // -------------------------
@@ -20,4 +20,5 @@ Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
   Route::delete('/offers/{collectionSlug}/items', [OfferController::class, 'removeItems']);
   Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate']);
   Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
+  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 });

@@ -51,7 +51,8 @@ abstract class Action
         }
 
         throw new Exception(
-          "The operation failed after 3 attempts: " . $e->getMessage(),
+          $e->getMessage(),
+          // "The operation failed after 3 attempts: " . $e->getMessage(),
           $e->getCode(),
           $e
         );

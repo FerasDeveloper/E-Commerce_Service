@@ -2,9 +2,11 @@
 
 namespace App\Domains\E_Commerce\Repositories\Eloquent\Offers;
 
+use App\Domains\E_Commerce\DTOs\Offers\SubscribeDTO;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Models\Offer;
 use App\Models\OfferPrice;
+use App\Models\UserOffer;
 use Carbon\Carbon;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
@@ -134,5 +136,28 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
     }
 
     return $entryIds;
+  }
+
+  public function subscribe(int $collectionId, SubscribeDTO $dto): void
+  {
+    $offer = Offer::where('collection_id', $collectionId)->first();
+    if (!$offer) {
+      throw new DomainException("Offer doesn't exist");
+    }
+    if ($offer->code != $dto->code) {
+      throw new DomainException("Invalid or expired code");
+    }
+    $subscribed = UserOffer::where('offer_id', $offer->id)->where('user_id', $dto->user_id)->first();
+
+    if ($subscribed)
+      throw new DomainException("This offer has already been subscribed to");
+    else
+      UserOffer::create([
+        'offer_id'   => $offer->id,
+        'user_id'    => $dto->user_id,
+        'project_id' => $dto->project_id,
+        'start_at'   => Carbon::now(),
+        'end_at'     => Carbon::now()->addDays($offer->offer_duration),
+      ]);
   }
 }
