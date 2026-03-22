@@ -3,6 +3,7 @@
 namespace App\Domains\E_Commerce\Repositories\Interfaces\Offers;
 
 use App\Models\Offer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 interface OfferRepositoryInterface
@@ -24,4 +25,8 @@ interface OfferRepositoryInterface
   public function deactivateOffer($collectionId): void;
 
   public function activateOffer($collectionId): void;
+
+  public function activateDueOffers(Carbon $now): int;
+
+  public function deactivateExpiredOffers(Carbon $now): int;
 }
