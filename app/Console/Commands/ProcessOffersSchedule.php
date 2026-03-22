@@ -14,7 +14,18 @@ class ProcessOffersSchedule extends Command
   {
     $result = $service->run();
 
-    $this->info("Activated: {$result['activated']}, Deactivated: {$result['deactivated']}");
+    $activatedCount = count($result['activated']);
+    $deactivatedCount = count($result['deactivated']);
+
+    $this->info("Activated offers affected entries: {$activatedCount}, Deactivated offers affected entries: {$deactivatedCount}");
+
+    $changedEntries = array_merge($result['activated'], $result['deactivated']);
+
+    if (!empty($changedEntries)) {
+      $this->info("Entries sent for re-evaluation: " . implode(', ', $changedEntries));
+
+      $this->call('offers:re-evaluate', ['entries' => $changedEntries]);
+    }
 
     return Command::SUCCESS;
   }

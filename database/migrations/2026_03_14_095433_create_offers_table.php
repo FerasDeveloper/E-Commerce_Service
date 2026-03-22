@@ -11,8 +11,8 @@ return new class extends Migration
     Schema::create('offers', function (Blueprint $table) {
       $table->id();
 
-      $table->unsignedBigInteger('project_id');
-      $table->unsignedBigInteger('collection_id');
+      $table->unsignedInteger('project_id');
+      $table->unsignedInteger('collection_id');
 
       $table->boolean('is_code_offer')->default(false);
       $table->unsignedInteger('offer_duration')->nullable();

@@ -5,6 +5,7 @@ namespace App\Domains\E_Commerce\Repositories\Eloquent\Offers;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Models\Offer;
 use App\Models\OfferPrice;
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -87,5 +88,51 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
         'is_active' => true
       ]);
     }
+  }
+
+  public function getAndActivateDueOffers(Carbon $now): array
+  {
+    $offers = Offer::where('is_active', false)
+      ->whereNotNull('start_at')
+      ->where('start_at', '<=', $now)
+      ->get();
+
+    $entryIds = [];
+
+    foreach ($offers as $offer) {
+      $offer->update(['is_active' => true]);
+
+      $ids = OfferPrice::where('applied_offer_id', $offer->id)
+        ->pluck('entry_id')
+        ->toArray();
+
+      $entryIds = array_merge($entryIds, $ids);
+    }
+
+    return $entryIds;
+  }
+
+  public function getAndDeactivateExpiredOffers(Carbon $now): array
+  {
+    $offers = Offer::where('is_active', true)
+      ->whereNotNull('end_at')
+      ->where('end_at', '<=', $now)
+      ->get();
+
+    $entryIds = [];
+
+    foreach ($offers as $offer) {
+      $offer->update(['is_active' => false]);
+
+      $ids = OfferPrice::where('applied_offer_id', $offer->id)
+        ->pluck('entry_id')
+        ->toArray();
+
+      $entryIds = array_merge($entryIds, $ids);
+
+      OfferPrice::where('applied_offer_id', $offer->id)->delete();
+    }
+
+    return $entryIds;
   }
 }

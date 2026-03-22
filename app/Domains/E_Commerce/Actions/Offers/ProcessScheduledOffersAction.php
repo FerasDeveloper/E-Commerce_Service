@@ -15,12 +15,12 @@ class ProcessScheduledOffersAction
   {
     $now = Carbon::now();
 
-    $activated = $this->repository->activateDueOffers($now);
-    $deactivated = $this->repository->deactivateExpiredOffers($now);
+    $activatedOffers = $this->repository->getAndActivateDueOffers($now);
+    $deactivatedOffers = $this->repository->getAndDeactivateExpiredOffers($now);
 
     return [
-      'activated' => $activated,
-      'deactivated' => $deactivated,
+      'activated' => $activatedOffers,
+      'deactivated' => $deactivatedOffers,
     ];
   }
 }

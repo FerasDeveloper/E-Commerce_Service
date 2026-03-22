@@ -11,7 +11,7 @@ return new class extends Migration
     Schema::create('offer_prices', function (Blueprint $table) {
       $table->id();
 
-      $table->unsignedBigInteger('entry_id');
+      $table->unsignedInteger('entry_id');
 
       $table->foreignId('applied_offer_id')
         ->constrained('offers')
