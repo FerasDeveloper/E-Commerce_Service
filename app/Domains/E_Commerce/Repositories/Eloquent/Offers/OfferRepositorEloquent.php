@@ -5,7 +5,6 @@ namespace App\Domains\E_Commerce\Repositories\Eloquent\Offers;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Models\Offer;
 use App\Models\OfferPrice;
-use Carbon\Carbon;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -88,21 +87,5 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
         'is_active' => true
       ]);
     }
-  }
-
-  public function activateDueOffers(Carbon $now): int
-  {
-    return Offer::where('is_active', false)
-      ->whereNotNull('start_at')
-      ->where('start_at', '<=', $now)
-      ->update(['is_active' => true]);
-  }
-
-  public function deactivateExpiredOffers(Carbon $now): int
-  {
-    return Offer::where('is_active', true)
-      ->whereNotNull('end_at')
-      ->where('end_at', '<=', $now)
-      ->update(['is_active' => false]);
   }
 }

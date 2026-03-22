@@ -10,7 +10,6 @@ use App\Domains\E_Commerce\Actions\Offers\DeleteOfferAction;
 use App\Domains\E_Commerce\Actions\Offers\DeleteOfferPricesAction;
 use App\Domains\E_Commerce\Actions\Offers\EnterOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\InsertOfferItemsAction;
-use App\Domains\E_Commerce\Actions\Offers\ProcessScheduledOffersAction;
 use App\Domains\E_Commerce\Actions\Offers\ReEvaluateEntryPricesAction;
 use App\Domains\E_Commerce\Actions\Offers\RemoveOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateCollectionAction;
@@ -42,8 +41,7 @@ class OfferService
     protected InsertOfferItemsAction $insertItemsAction,
     protected RemoveOfferItemsAction $removeItemsAction,
     protected DeactivateOfferAction $deactivateOffer,
-    protected ActivateOfferAction $activateOffer,
-    protected ProcessScheduledOffersAction $action
+    protected ActivateOfferAction $activateOffer
   ) {}
 
   public function create(CreateOfferDTO $dto): void
@@ -127,10 +125,5 @@ class OfferService
   public function activate(ActivationOfferDTO $dto)
   {
     $this->activateOffer->execute($dto);
-  }
-
-  public function run(): array
-  {
-    return $this->action->execute();
   }
 }
