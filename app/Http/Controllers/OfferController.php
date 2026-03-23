@@ -5,18 +5,21 @@ namespace App\Http\Controllers;
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\ActivationOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
+use App\Domains\E_Commerce\DTOs\Offers\SubscribeDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Requests\CreateOfferRequest;
 use App\Domains\E_Commerce\Requests\ActivationOfferRequest;
 use App\Domains\E_Commerce\Requests\InsertOfferItemsRequest;
 use App\Domains\E_Commerce\Requests\RemoveOfferItemsRequest;
+use App\Domains\E_Commerce\Requests\SubscribeOfferRequest;
 use App\Domains\E_Commerce\Requests\UpdateOfferRequest;
 use App\Domains\E_Commerce\Services\OfferService;
+use App\Services\CMS\CMSApiClient;
 use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
-  public function __construct(protected OfferService $service) {}
+  public function __construct(protected OfferService $service, protected CMSApiClient $cms) {}
 
   public function store(CreateOfferRequest $request)
   {
@@ -102,6 +105,16 @@ class OfferController extends Controller
 
     return response()->json([
       'message' => 'Offer activated successfully'
+    ]);
+  }
+
+  public function subscribe($collectionSlug, SubscribeOfferRequest $request)
+  {
+    $dto = SubscribeDTO::fromRequest($collectionSlug, $request);
+    $this->service->subscribe($dto);
+
+    return response()->json([
+      'message' => 'Offer subscribed successfully'
     ]);
   }
 }

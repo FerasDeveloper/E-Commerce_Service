@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
   ->withMiddleware(function (Middleware $middleware): void {
     $middleware->alias([
       'resolve.project' => \App\Http\Middleware\ResolveProject::class,
+      'auth.user' => \App\Http\Middleware\AuthUserMiddleware::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions): void {
@@ -22,8 +23,4 @@ return Application::configure(basePath: dirname(__DIR__))
   })->withSchedule(function (Schedule $schedule) {
     $schedule->command('offers:process-schedule')
       ->everyMinute();
-
-    // Offers: static applied_prices recalculation
-    // $schedule->command('offers:recalculate-active')
-    //   ->everyMinute();
   })->create();

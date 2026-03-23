@@ -2,7 +2,9 @@
 
 namespace App\Domains\E_Commerce\Repositories\Interfaces\Offers;
 
+use App\Domains\E_Commerce\DTOs\Offers\SubscribeDTO;
 use App\Models\Offer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 interface OfferRepositoryInterface
@@ -21,7 +23,9 @@ interface OfferRepositoryInterface
 
   public function deleteOfferByCollectionId($collectionId): void;
 
-  public function deactivateOffer($collectionId): void;
+  public function getAndActivateDueOffers(Carbon $now);
 
-  public function activateOffer($collectionId): void;
+  public function getAndDeactivateExpiredOffers(Carbon $now);
+
+  public function subscribe(int $collectionId, SubscribeDTO $dto): void;
 }

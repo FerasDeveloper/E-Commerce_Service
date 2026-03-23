@@ -2,9 +2,12 @@
 
 namespace App\Domains\E_Commerce\Repositories\Eloquent\Offers;
 
+use App\Domains\E_Commerce\DTOs\Offers\SubscribeDTO;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Models\Offer;
 use App\Models\OfferPrice;
+use App\Models\UserOffer;
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -87,5 +90,74 @@ class OfferRepositorEloquent implements OfferRepositoryInterface
         'is_active' => true
       ]);
     }
+  }
+
+  public function getAndActivateDueOffers(Carbon $now): array
+  {
+    $offers = Offer::where('is_active', false)
+      ->whereNotNull('start_at')
+      ->where('start_at', '<=', $now)
+      ->get();
+
+    $entryIds = [];
+
+    foreach ($offers as $offer) {
+      $offer->update(['is_active' => true]);
+
+      $ids = OfferPrice::where('applied_offer_id', $offer->id)
+        ->pluck('entry_id')
+        ->toArray();
+
+      $entryIds = array_merge($entryIds, $ids);
+    }
+
+    return $entryIds;
+  }
+
+  public function getAndDeactivateExpiredOffers(Carbon $now): array
+  {
+    $offers = Offer::where('is_active', true)
+      ->whereNotNull('end_at')
+      ->where('end_at', '<=', $now)
+      ->get();
+
+    $entryIds = [];
+
+    foreach ($offers as $offer) {
+      $offer->update(['is_active' => false]);
+
+      $ids = OfferPrice::where('applied_offer_id', $offer->id)
+        ->pluck('entry_id')
+        ->toArray();
+
+      $entryIds = array_merge($entryIds, $ids);
+
+      OfferPrice::where('applied_offer_id', $offer->id)->delete();
+    }
+
+    return $entryIds;
+  }
+
+  public function subscribe(int $collectionId, SubscribeDTO $dto): void
+  {
+    $offer = Offer::where('collection_id', $collectionId)->first();
+    if (!$offer) {
+      throw new DomainException("Offer doesn't exist");
+    }
+    if ($offer->code != $dto->code) {
+      throw new DomainException("Invalid or expired code");
+    }
+    $subscribed = UserOffer::where('offer_id', $offer->id)->where('user_id', $dto->user_id)->first();
+
+    if ($subscribed)
+      throw new DomainException("This offer has already been subscribed to");
+    else
+      UserOffer::create([
+        'offer_id'   => $offer->id,
+        'user_id'    => $dto->user_id,
+        'project_id' => $dto->project_id,
+        'start_at'   => Carbon::now(),
+        'end_at'     => Carbon::now()->addDays($offer->offer_duration),
+      ]);
   }
 }

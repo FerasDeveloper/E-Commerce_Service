@@ -5,7 +5,7 @@ use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
+Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(function () {
   // -------------------------
   // Offers
   // -------------------------
@@ -24,4 +24,5 @@ Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
 
   // test
   Route::get('/products', [ProductController::class, 'index']);
+  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 });

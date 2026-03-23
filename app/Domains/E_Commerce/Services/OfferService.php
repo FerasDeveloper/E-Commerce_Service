@@ -10,13 +10,16 @@ use App\Domains\E_Commerce\Actions\Offers\DeleteOfferAction;
 use App\Domains\E_Commerce\Actions\Offers\DeleteOfferPricesAction;
 use App\Domains\E_Commerce\Actions\Offers\EnterOfferItemsAction;
 use App\Domains\E_Commerce\Actions\Offers\InsertOfferItemsAction;
+use App\Domains\E_Commerce\Actions\Offers\ProcessScheduledOffersAction;
 use App\Domains\E_Commerce\Actions\Offers\ReEvaluateEntryPricesAction;
 use App\Domains\E_Commerce\Actions\Offers\RemoveOfferItemsAction;
+use App\Domains\E_Commerce\Actions\Offers\SubscribeAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateCollectionAction;
 use App\Domains\E_Commerce\Actions\Offers\UpdateOfferAction;
 use App\Domains\E_Commerce\DTOs\Offers\CreateOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\ActivationOfferDTO;
 use App\Domains\E_Commerce\DTOs\Offers\OfferItemsDTO;
+use App\Domains\E_Commerce\DTOs\Offers\SubscribeDTO;
 use App\Domains\E_Commerce\DTOs\Offers\UpdateOfferDTO;
 use App\Domains\E_Commerce\Read\Actions\Offers\IndexOffersAction;
 use App\Domains\E_Commerce\Read\Actions\Offers\ShowOfferDetailsAction;
@@ -41,7 +44,9 @@ class OfferService
     protected InsertOfferItemsAction $insertItemsAction,
     protected RemoveOfferItemsAction $removeItemsAction,
     protected DeactivateOfferAction $deactivateOffer,
-    protected ActivateOfferAction $activateOffer
+    protected ActivateOfferAction $activateOffer,
+    protected ProcessScheduledOffersAction $action,
+    protected SubscribeAction $subscribeAction
   ) {}
 
   public function create(CreateOfferDTO $dto): void
@@ -125,5 +130,15 @@ class OfferService
   public function activate(ActivationOfferDTO $dto)
   {
     $this->activateOffer->execute($dto);
+  }
+
+  public function run(): array
+  {
+    return $this->action->execute();
+  }
+
+  public function subscribe(SubscribeDTO $dto)
+  {
+    $this->subscribeAction->execute($dto);
   }
 }

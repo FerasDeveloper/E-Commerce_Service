@@ -22,6 +22,9 @@ return [
     'url' => env('CMS_URL'),
   ],
 
+  'auth' => [
+    'url' => env('Auth_URL'),
+  ],
 
   'resend' => [
     'key' => env('RESEND_API_KEY'),
