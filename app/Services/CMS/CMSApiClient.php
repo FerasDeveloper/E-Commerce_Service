@@ -21,7 +21,7 @@ class CMSApiClient
     $response = Http::withHeaders(
       $this->projectHeaders()
     )->get("{$this->baseUrl}/api/projects/resolve");
-
+dd($response->json());
     if ($response->failed()) {
       $error = $response->json('message')
         ?? substr($response->body(), 0, 200);
@@ -164,5 +164,21 @@ class CMSApiClient
     }
 
     return $response->json('message');
+  }
+
+  public function getEntries(string $collection, array $params = [])
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/cms/collections/{$collection}/entries", $params);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to fetch entries from CMS: " . $error);
+    }
+
+    return $response->json();
   }
 }

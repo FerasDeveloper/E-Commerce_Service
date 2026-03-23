@@ -2,15 +2,19 @@
 
 namespace App\Domains\E_Commerce\Services;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use App\Domains\E_Commerce\Actions\Pricing\EnrichEntriesWithPricesAction;
+use App\Services\CMS\CMSApiClient as CMSCMSApiClient;
 
 class ProductService
 {
-    public function getProduct($id)
-    {
-        return Cache::remember("product_$id", 60, function () use ($id) {
-            return Http::get("cms/api/products/$id")->json();
-        });
-    }
+  public function __construct(
+    private CMSCMSApiClient $cms,
+    private EnrichEntriesWithPricesAction $pricing
+  ) {}
+
+  public function getProducts(string $collection, ?string $code = null)
+  {
+    $entries = $this->cms->getEntries($collection);
+    return $this->pricing->execute($entries, $code);
+  }
 }

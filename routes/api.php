@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,7 @@ Route::middleware('resolve.project')->prefix('ecommerce')->group(function () {
   Route::delete('/offers/{collectionSlug}/items', [OfferController::class, 'removeItems']);
   Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate']);
   Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
+
+  // test
+  Route::get('/products', [ProductController::class, 'index']);
 });
