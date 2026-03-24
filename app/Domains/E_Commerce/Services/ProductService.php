@@ -9,8 +9,8 @@ class ProductService
         private PricingService $pricing
     ) {}
 
-    public function getProducts(string $collection, ?string $code = null)
+    public function getProducts($collectionSlug,string $collection, ?string $code = null)
     {
-        return $this->pricing->fromCollection($collection, $code);
+        return $this->pricing->fromCollection($collectionSlug,$collection, $code);
     }
 }

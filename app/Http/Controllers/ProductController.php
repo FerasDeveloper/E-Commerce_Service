@@ -9,9 +9,10 @@ class ProductController extends Controller
 {
   public function __construct(private ProductService $service) {}
 
-  public function index(Request $request)
+  public function index(string $collectionSlug,Request $request)
   {
     return $this->service->getProducts(
+      $collectionSlug,
       'products',
       $request->code
     );

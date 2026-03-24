@@ -25,8 +25,7 @@ class PricingService
     // 🔥 للـ products page
     public function fromCollection(string $collection, ?string $code = null): array
     {
-        $entries = $this->cms->getDynamicEntries($collection);
-
+        $entries = $this->cms->getCollectionBySlug($collection);
         return $this->pricing->execute($entries, $code);
     }
 }
