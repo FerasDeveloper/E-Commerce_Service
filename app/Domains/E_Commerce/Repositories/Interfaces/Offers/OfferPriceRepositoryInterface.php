@@ -17,4 +17,8 @@ interface OfferPriceRepositoryInterface
   public function deleteOfferPriceForEntryAndProject(int $entryId, int $offerId): void;
 
   public function getEntryPrice(int $entryId, int $offerId);
+
+  // test
+    public function getAutomaticPrices(array $entryIds);
+    public function getCodePrices(array $entryIds, string $code);
 }

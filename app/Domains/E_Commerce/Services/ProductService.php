@@ -2,15 +2,15 @@
 
 namespace App\Domains\E_Commerce\Services;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 
 class ProductService
 {
-    public function getProduct($id)
+    public function __construct(
+        private PricingService $pricing
+    ) {}
+
+    public function getProducts(string $collection, ?string $code = null)
     {
-        return Cache::remember("product_$id", 60, function () use ($id) {
-            return Http::get("cms/api/products/$id")->json();
-        });
+        return $this->pricing->fromCollection($collection, $code);
     }
 }

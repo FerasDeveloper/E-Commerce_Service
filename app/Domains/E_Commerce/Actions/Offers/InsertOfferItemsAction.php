@@ -3,7 +3,6 @@
 namespace App\Domains\E_Commerce\Actions\Offers;
 
 use App\Domains\Core\Actions\Action;
-use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Services\CMS\CMSApiClient;
 

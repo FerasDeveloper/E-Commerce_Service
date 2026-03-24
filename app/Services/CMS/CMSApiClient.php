@@ -21,7 +21,6 @@ class CMSApiClient
     $response = Http::withHeaders(
       $this->projectHeaders()
     )->get("{$this->baseUrl}/api/projects/resolve");
-
     if ($response->failed()) {
       $error = $response->json('message')
         ?? substr($response->body(), 0, 200);
@@ -164,5 +163,36 @@ class CMSApiClient
     }
 
     return $response->json('message');
+  }
+
+  public function getEntries(string $collection, array $params = [])
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/cms/collections/{$collection}/entries", $params);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to fetch entries from CMS: " . $error);
+    }
+
+    return $response->json();
+  }
+
+  public function getEntriesByIds(array $ids): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/cms/entries/bulk", [
+      'ids' => $ids
+    ]);
+
+    if ($response->failed()) {
+      throw new \Exception("Failed to fetch entries by ids");
+    }
+
+    return $response->json()['data'];
   }
 }
