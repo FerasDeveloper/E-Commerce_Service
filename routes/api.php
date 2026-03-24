@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\PricingController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,5 +25,6 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
 
   // test
   Route::get('/products', [ProductController::class, 'index']);
+  Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
   Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 });

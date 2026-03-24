@@ -2,7 +2,7 @@
 
 namespace App\Domains\E_Commerce\Actions\Pricing;
 
-use App\Domains\E_Commerce\Repositories\Interfaces\OfferPriceRepositoryInterface;
+use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
 
 class EnrichEntriesWithPricesAction
 {

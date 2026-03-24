@@ -21,7 +21,6 @@ class CMSApiClient
     $response = Http::withHeaders(
       $this->projectHeaders()
     )->get("{$this->baseUrl}/api/projects/resolve");
-dd($response->json());
     if ($response->failed()) {
       $error = $response->json('message')
         ?? substr($response->body(), 0, 200);
@@ -180,5 +179,20 @@ dd($response->json());
     }
 
     return $response->json();
+  }
+
+  public function getEntriesByIds(array $ids): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/cms/entries/bulk", [
+      'ids' => $ids
+    ]);
+
+    if ($response->failed()) {
+      throw new \Exception("Failed to fetch entries by ids");
+    }
+
+    return $response->json()['data'];
   }
 }
