@@ -21,4 +21,10 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate']);
   Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
   Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
+
+  // -------------------------
+  // Cart
+  // -------------------------
+  // CRUD
+  // Route::get('/cart', [])
 });
