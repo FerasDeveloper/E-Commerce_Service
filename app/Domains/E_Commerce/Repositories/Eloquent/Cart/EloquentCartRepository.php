@@ -7,31 +7,23 @@ use App\Models\Cart;
 
 class EloquentCartRepository implements CartRepositoryInterface
 {
-    public function getActiveCart($userId)
-    {
-        return Cart::with('items')
-            ->where('user_id', $userId)
-            ->where('status', 'active')
-            ->first();
-    }
+  public function getOrCreate(int $project_id, int $user_id): Cart
+  {
+    return Cart::firstOrCreate([
+      'project_id' => $project_id,
+      'user_id'    => $user_id,
+    ]);
+  }
 
-    public function createCart($userId)
-    {
-        return Cart::create([
-            'user_id' => $userId,
-            'status' => 'active',
-            'total_price' => 0
-        ]);
-    }
+  public function findByProjectAndUser(int $project_id, int $user_id): ?Cart
+  {
+    return Cart::where('project_id', $project_id)
+      ->where('user_id', $user_id)
+      ->first();
+  }
 
-    public function updateCartTotal($cart)
-    {
-        $total = $cart->items->sum('total');
-
-        $cart->update([
-            'total_price' => $total
-        ]);
-
-        return $cart;
-    }
+  public function loadItems(Cart $cart): Cart
+  {
+    return $cart->load('items');
+  }
 }

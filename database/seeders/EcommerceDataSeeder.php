@@ -108,8 +108,8 @@ class EcommerceDataSeeder extends Seeder
       }
 
       $cart = Cart::query()->firstOrCreate(
-        ['user_id' => 1, 'status' => 'active'],
-        ['total_price' => 0]
+        ['user_id' => 1, 'project_id' => $projectId],
+        ['notes' => null]
       );
 
       CartItem::query()->where('cart_id', $cart->id)->delete();
@@ -123,16 +123,14 @@ class EcommerceDataSeeder extends Seeder
 
         CartItem::query()->create([
           'cart_id' => $cart->id,
-          'product_id' => $productId,
+          'item_id' => $productId,
           'quantity' => $quantity,
           'price' => $price,
-          'total' => $total,
+          'subtotal' => $total,
           'created_at' => $now,
           'updated_at' => $now,
         ]);
       }
-
-      $cart->update(['total_price' => $cartTotal]);
 
       $wishlist = Wishlist::query()->firstOrCreate(['user_id' => 1]);
       WishlistItem::query()->where('wishlist_id', $wishlist->id)->delete();
@@ -162,11 +160,11 @@ class EcommerceDataSeeder extends Seeder
       foreach (CartItem::query()->where('cart_id', $cart->id)->get() as $item) {
         OrderItem::query()->create([
           'order_id' => $order->id,
-          'product_id' => $item->product_id,
-          'product_name' => 'Product #' . $item->product_id,
+          'product_id' => $item->item_id,
+          'product_name' => 'Product #' . $item->item_id,
           'price' => $item->price,
           'quantity' => $item->quantity,
-          'total' => $item->total,
+          'total' => $item->subtotal,
           'created_at' => $now,
           'updated_at' => $now,
         ]);

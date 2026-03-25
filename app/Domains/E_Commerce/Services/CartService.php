@@ -2,37 +2,68 @@
 
 namespace App\Domains\E_Commerce\Services;
 
-use App\Domains\E_Commerce\Actions\Cart\AddToCartAction;
+use App\Domains\E_Commerce\Actions\Cart\AddCartItemAction;
 use App\Domains\E_Commerce\Actions\Cart\ClearCartAction;
-use App\Domains\E_Commerce\Actions\Cart\RemoveCartItemAction;
-use App\Domains\E_Commerce\Actions\Cart\UpdateCartItemAction;
+use App\Domains\E_Commerce\Actions\Cart\GetCartAction;
+use App\Domains\E_Commerce\Actions\Cart\RemoveCartItemsAction;
+use App\Domains\E_Commerce\Actions\Cart\UpdateCartItemsAction;
+use App\Domains\E_Commerce\DTOs\Cart\AddCartItemsDTO;
+use App\Domains\E_Commerce\DTOs\Cart\RemoveCartItemsDTO;
+use App\Domains\E_Commerce\DTOs\Cart\UpdateCartItemsDTO;
+use App\Services\CMS\CMSApiClient;
+use DomainException;
 
 class CartService
 {
-    public function __construct(
-        private AddToCartAction $add,
-        private UpdateCartItemAction $update,
-        private RemoveCartItemAction $remove,
-        private ClearCartAction $clear
-    ) {}
+  public function __construct(
+    protected AddCartItemAction $addItemAction,
+    protected GetCartAction $getCartAction,
+    protected CMSApiClient $cms,
+    protected UpdateCartItemsAction $updateCartItemsAction,
+    protected RemoveCartItemsAction $removeCartItemsAction,
+    protected ClearCartAction $clearCartAction,
+  ) {}
 
-    public function add($userId, $productId, $qty)
-    {
-        return $this->add->execute($userId, $productId, $qty);
+  public function addItems(AddCartItemsDTO $dto)
+  {
+    return $this->addItemAction->execute($dto);
+  }
+
+  public function getCart(int $project_id, int $user_id)
+  {
+    $cart = $this->getCartAction->execute($project_id, $user_id);
+
+    if (!$cart) {
+      throw new DomainException("You don't have a cart yet");
     }
 
-    public function updateItem($itemId, $qty)
-    {
-        return $this->update->execute($itemId, $qty);
+    $ids = $cart['items']->pluck('item_id')->toArray();
+    $entries = $this->cms->getEntriesByIds($ids);
+
+    $entriesMap = [];
+    foreach ($entries as $entry) {
+      $entriesMap[$entry['id']] = $entry;
     }
 
-    public function removeItem($itemId)
-    {
-        return $this->remove->execute($itemId);
+    foreach ($cart['items'] as $item) {
+      $item['entry'] = $entriesMap[$item['item_id']] ?? null;
     }
 
-    public function clear($userId)
-    {
-        return $this->clear->execute($userId);
-    }
+    return $cart;
+  }
+
+  public function updateItems(UpdateCartItemsDTO $dto)
+  {
+    return $this->updateCartItemsAction->execute($dto);
+  }
+
+  public function removeItems(RemoveCartItemsDTO $dto)
+  {
+    return $this->removeCartItemsAction->execute($dto);
+  }
+
+  public function clearCart(int $project_id, int $user_id)
+  {
+    return $this->clearCartAction->execute($project_id, $user_id);
+  }
 }

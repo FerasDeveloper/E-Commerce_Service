@@ -13,12 +13,15 @@ return new class extends Migration
   {
     Schema::create('carts', function (Blueprint $table) {
       $table->id();
-      $table->unsignedBigInteger('user_id');
-      $table->string('status')->default('active');
-      $table->decimal('total_price', 10, 2)->default(0);
+      $table->unsignedInteger('project_id');
+      $table->unsignedInteger('user_id');
+      $table->text('notes')->nullable();
       $table->timestamps();
 
+      $table->unique(['project_id', 'user_id']);
+      $table->index('project_id');
       $table->index('user_id');
+      $table->index(['project_id', 'user_id']);
     });
   }
 

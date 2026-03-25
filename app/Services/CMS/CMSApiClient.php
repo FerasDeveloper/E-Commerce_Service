@@ -182,6 +182,22 @@ class CMSApiClient
     return $response->json();
   }
 
+  public function getEntryValuesById(int $id)
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/cms/entries/id/$id");
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to fetch entries from CMS: " . $error);
+    }
+
+    return $response->json();
+  }
+
   public function getEntriesByIds(array $ids): array
   {
     $response = Http::withHeaders(
@@ -194,7 +210,7 @@ class CMSApiClient
       throw new \Exception("Failed to fetch entries by ids");
     }
 
-    return $response->json()['data'];
+    return $response->json();
   }
 
   public function getEntriesByDataType(string $dataTypeSlug): array

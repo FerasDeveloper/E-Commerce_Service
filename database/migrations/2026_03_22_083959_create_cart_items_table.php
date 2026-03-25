@@ -13,17 +13,20 @@ return new class extends Migration
   {
     Schema::create('cart_items', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('cart_id')->constrained()->cascadeOnDelete();
+      $table->foreignId('cart_id')
+        ->constrained('carts')
+        ->cascadeOnDelete()
+        ->cascadeOnUpdate();
 
-      $table->unsignedBigInteger('product_id'); // من CMS
-
+      $table->unsignedInteger('item_id');
       $table->integer('quantity');
-      $table->decimal('price', 10, 2); // snapshot
-      $table->decimal('total', 10, 2);
-
+      $table->decimal('price', 10, 2);
+      $table->decimal('subtotal', 10, 2);
       $table->timestamps();
 
-      $table->index('product_id');
+      $table->index('cart_id');
+      $table->index('item_id');
+      $table->index(['cart_id', 'item_id']);
     });
   }
 

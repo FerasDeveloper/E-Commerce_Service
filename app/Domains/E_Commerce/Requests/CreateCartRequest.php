@@ -9,9 +9,10 @@ class CreateCartRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'item_id' => 'required',
-      'count' => ['required', 'numeric'],
-      'price' => ['required', 'numeric']
+      'items' => ['required', 'array', 'min:1'],
+
+      'items.*.item_id' => ['required', 'integer'],
+      'items.*.quantity' => ['required', 'integer', 'min:1'],
     ];
   }
 }
