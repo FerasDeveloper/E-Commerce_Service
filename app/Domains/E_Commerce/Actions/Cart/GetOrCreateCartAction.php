@@ -7,15 +7,15 @@ use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
 class GetOrCreateCartAction
 {
   public function __construct(
-    private CartRepositoryInterface $cartRepo
+    private CartRepositoryInterface $repository
   ) {}
 
-  public function execute($userId)
+  public function execute($dto)
   {
-    $cart = $this->cartRepo->getActiveCart($userId);
+    $cart = $this->repository->getCart($dto->project_id, $dto->user_id);
 
     if (!$cart) {
-      $cart = $this->cartRepo->createCart($userId);
+      $cart = $this->repository->createCart($dto);
     }
 
     return $cart;

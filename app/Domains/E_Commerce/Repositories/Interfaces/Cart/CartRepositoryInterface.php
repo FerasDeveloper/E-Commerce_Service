@@ -2,9 +2,12 @@
 
 namespace App\Domains\E_Commerce\Repositories\Interfaces\Cart;
 
+use App\Domains\E_Commerce\DTOs\Cart\CreateCartDTO;
+use App\Models\Cart;
+
 interface CartRepositoryInterface
 {
-  public function getActiveCart($userId);
-  public function createCart($userId);
-  public function updateCartTotal($cart);
+  public function getOrCreate(int $project_id, int $user_id);
+  public function findByProjectAndUser(int $project_id,int $user_id);
+  public function loadItems(Cart $cart);
 }

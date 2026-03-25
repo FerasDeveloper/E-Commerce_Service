@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PricingController;
@@ -23,14 +24,18 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate']);
   Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
 
-  // test
-  Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
-  Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
-  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
-
   // -------------------------
   // Cart
   // -------------------------
   // CRUD
-  // Route::get('/cart', [])
+  Route::post('/cart', [CartController::class, 'store']);
+  Route::get('/cart', [CartController::class, 'show']);
+  Route::put('/cart', [CartController::class, 'update']);
+  Route::delete('/cart/items', [CartController::class, 'remove']);
+  Route::delete('/cart', [CartController::class, 'clear']);
+
+  // test
+  Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
+  Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
+  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 });
