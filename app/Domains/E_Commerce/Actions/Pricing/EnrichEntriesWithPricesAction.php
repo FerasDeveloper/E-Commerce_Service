@@ -24,8 +24,7 @@ class EnrichEntriesWithPricesAction
             $entryId = $entry['id'];
 
             // $originalPrice = $entry['price']; // ⚠️ حسب CMS structure
-            $originalPrice = collect($entry['values'])
-    ->firstWhere('key', 'price')['value'] ?? 0;
+            $originalPrice = $entry['values']['price'] ?? 0;
 
             $price = $originalPrice;
             $appliedOffer = null;

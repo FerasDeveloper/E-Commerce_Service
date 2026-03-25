@@ -24,7 +24,8 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
 
   // test
-  Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
+  // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
+  Route::get('/products/{dataTypeSlug}', [ProductController::class, 'index']);
   Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
   Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 

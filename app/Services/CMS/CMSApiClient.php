@@ -165,6 +165,7 @@ class CMSApiClient
     return $response->json('message');
   }
 
+  // get data
   public function getEntries(string $collection, array $params = [])
   {
     $response = Http::withHeaders(
@@ -194,5 +195,20 @@ class CMSApiClient
     }
 
     return $response->json()['data'];
+  }
+
+  public function getEntriesByDataType(string $dataTypeSlug): array
+  {
+    $project = $this->resolveProject();
+
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->get("{$this->baseUrl}/api/cms/projects/{$project['id']}/data-types/{$dataTypeSlug}/entries");
+
+    if ($response->failed()) {
+      throw new \Exception("Failed to fetch entries by data type");
+    }
+
+    return $response->json()['entries']; // 🔥 مهم
   }
 }
