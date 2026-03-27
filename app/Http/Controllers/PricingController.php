@@ -20,7 +20,6 @@ class PricingController extends Controller
   {
     return $this->service->calculate(
       $request->entry_ids,
-      $request->code
     );
   }
 }

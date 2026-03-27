@@ -8,6 +8,9 @@ use App\Models\Cart;
 interface CartRepositoryInterface
 {
   public function getOrCreate(int $project_id, int $user_id);
-  public function findByProjectAndUser(int $project_id,int $user_id);
+  public function findByProjectAndUser(int $project_id, int $user_id);
   public function loadItems(Cart $cart);
+  public function findById(int $id);
+
+  public function delete(int $id): void;
 }

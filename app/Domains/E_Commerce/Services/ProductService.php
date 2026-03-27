@@ -8,11 +8,6 @@ class ProductService
   public function __construct(
     private PricingService $pricing
   ) {}
-
-  // public function getProducts($collectionSlug,string $collection, ?string $code = null)
-  // {
-  //     return $this->pricing->fromCollection($collectionSlug,$collection, $code);
-  // }
   public function getProducts(string $dataTypeSlug, ?string $code = null)
   {
     return $this->pricing->fromDataType($dataTypeSlug, $code);

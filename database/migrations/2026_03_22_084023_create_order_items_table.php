@@ -16,8 +16,7 @@ return new class extends Migration
       $table->foreignId('order_id')->constrained()->cascadeOnDelete();
 
       $table->unsignedBigInteger('product_id');
-
-      $table->string('product_name');
+      $table->string('status')->default('pending');
       $table->decimal('price', 10, 2);
       $table->integer('quantity');
       $table->decimal('total', 10, 2);
