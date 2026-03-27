@@ -146,6 +146,7 @@ class EcommerceDataSeeder extends Seeder
       $order = Order::query()->create([
         'user_id' => 1,
         'status' => 'paid',
+         'project_id' => 5,
         'total_price' => $cartTotal,
         'currency' => 'USD',
         'address' => json_encode([
@@ -161,7 +162,6 @@ class EcommerceDataSeeder extends Seeder
         OrderItem::query()->create([
           'order_id' => $order->id,
           'product_id' => $item->item_id,
-          'product_name' => 'Product #' . $item->item_id,
           'price' => $item->price,
           'quantity' => $item->quantity,
           'total' => $item->subtotal,

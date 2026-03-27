@@ -21,4 +21,7 @@ interface OfferPriceRepositoryInterface
   // test
     public function getAutomaticPrices(array $entryIds);
     public function getCodePrices(array $entryIds, string $code);
+
+    // public function getUserPrices(array $entryIds, int $userId);
+    public function getUserPrices(array $entryIds);
 }

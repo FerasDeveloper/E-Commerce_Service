@@ -26,4 +26,12 @@ class EloquentCartRepository implements CartRepositoryInterface
   {
     return $cart->load('items');
   }
+  public function findById($id)
+  {
+    return Cart::find($id);
+  }
+  public function delete(int $id): void
+  {
+    Cart::where('id', $id)->delete();
+  }
 }

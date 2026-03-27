@@ -15,11 +15,17 @@ class PricingService
   ) {}
 
   // 🔥 للكارت
-  public function calculate(array $entryIds, ?string $code = null): array
+  // public function calculate(array $entryIds, ?string $code = null): array
+  // {
+  //   $entries = $this->fetchEntries->execute($entryIds);
+
+  //   return $this->pricing->execute($entries, $code);
+  // }
+  public function calculate(array $entryIds): array
   {
     $entries = $this->fetchEntries->execute($entryIds);
 
-    return $this->pricing->execute($entries, $code);
+    return $this->pricing->execute($entries);
   }
 
   // 🔥 للـ products page
@@ -39,7 +45,7 @@ class PricingService
 
     return $this->pricing->execute($entries, $code);
   }
-// test
+  // test
   public function fromDataType(string $dataTypeSlug, ?string $code = null): array
   {
     $entries = $this->cms->getEntriesByDataType($dataTypeSlug);
