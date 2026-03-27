@@ -10,6 +10,8 @@ use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartItemRepositoryInterf
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
+use App\Domains\Payment\Repositories\EloquentPaymentRepository;
+use App\Domains\Payment\Repositories\PaymentRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     $this->app->bind(OfferPriceRepositoryInterface::class, OfferPriceRepositoryEloquent::class);
     $this->app->bind(CartRepositoryInterface::class, EloquentCartRepository::class);
     $this->app->bind(CartItemRepositoryInterface::class, EloquentCartItemRepository::class);
+    $this->app->bind(PaymentRepositoryInterface::class, EloquentPaymentRepository::class);
   }
 
   /**

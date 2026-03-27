@@ -8,29 +8,35 @@ return new class extends Migration
 {
   public function up(): void
   {
-    Schema::create('payments', function (Blueprint $table) {
+    Schema::create('transactions', function (Blueprint $table) {
       $table->id();
 
-      $table->unsignedInteger('order_id')->index();
-      $table->unsignedInteger('user_id')->nullable()->index();
-      $table->unsignedInteger('project_id')->nullable()->index();
-      $table->string('gateway');
+      $table->foreignId('payment_id')
+        ->constrained('payments')
+        ->cascadeOnDelete();
+
+      $table->string('gateway_transaction_id')->index();
+
+      $table->enum('type', ['charge', 'refund'])->index();
+
       $table->decimal('amount', 12, 2);
       $table->char('currency', 3)->default('USD');
+
       $table->enum('status', [
         'pending',
-        'paid',
+        'success',
         'failed',
-        'refunded'
       ])->default('pending')->index();
 
-      $table->string('description')->nullable();
+      $table->json('gateway_response')->nullable();
+      $table->timestamp('processed_at')->nullable();
+
       $table->timestamps();
     });
   }
 
   public function down(): void
   {
-    Schema::dropIfExists('payments');
+    Schema::dropIfExists('transactions');
   }
 };

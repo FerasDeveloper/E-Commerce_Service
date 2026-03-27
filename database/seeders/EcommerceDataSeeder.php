@@ -170,16 +170,16 @@ class EcommerceDataSeeder extends Seeder
         ]);
       }
 
-      Payment::query()->create([
-        'order_id' => $order->id,
-        'method' => 'card',
-        'status' => 'paid',
-        'transaction_id' => 'TX-' . $order->id,
-        'amount' => $cartTotal,
-        'paid_at' => $now,
-        'created_at' => $now,
-        'updated_at' => $now,
-      ]);
+      // Payment::query()->create([
+      //   'order_id' => $order->id,
+      //   'method' => 'card',
+      //   'status' => 'paid',
+      //   'transaction_id' => 'TX-' . $order->id,
+      //   'amount' => $cartTotal,
+      //   'paid_at' => $now,
+      //   'created_at' => $now,
+      //   'updated_at' => $now,
+      // ]);
     });
   }
 }
