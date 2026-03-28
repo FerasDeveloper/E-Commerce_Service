@@ -11,55 +11,82 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(function () {
+
   // -------------------------
   // Offers
   // -------------------------
-  // CRUD
-  Route::post('/offers', [OfferController::class, 'store']);
-  Route::patch('/offers/{collectionSlug}', [OfferController::class, 'update']);
-  Route::get('/offers/{collectionSlug}', [OfferController::class, 'show']);
-  Route::delete('/offers/{collectionSlug}', [OfferController::class, 'destroy']);
+  Route::post('/offers', [OfferController::class, 'store'])
+    ->middleware('permission:offer.create');
 
-  // static
+  Route::patch('/offers/{collectionSlug}', [OfferController::class, 'update'])
+    ->middleware('permission:offer.update');
+
+  Route::delete('/offers/{collectionSlug}', [OfferController::class, 'destroy'])
+    ->middleware('permission:offer.delete');
+
+  Route::post('/offers/{collectionSlug}/insert', [OfferController::class, 'addItems'])
+    ->middleware('permission:offer.update');
+
+  Route::delete('/offers/{collectionSlug}/items', [OfferController::class, 'removeItems'])
+    ->middleware('permission:offer.update');
+
+  Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate'])
+    ->middleware('permission:offer.update');
+
+  Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate'])
+    ->middleware('permission:offer.update');
+
   Route::get('/offers', [OfferController::class, 'index']);
-  Route::post('/offers/{collectionSlug}/insert', [OfferController::class, 'addItems']);
-  Route::delete('/offers/{collectionSlug}/items', [OfferController::class, 'removeItems']);
-  Route::post('/offers/{collectionSlug}/deactivate', [OfferController::class, 'deactivate']);
-  Route::post('/offers/{collectionSlug}/activate', [OfferController::class, 'activate']);
+  Route::get('/offers/{collectionSlug}', [OfferController::class, 'show']);
+  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 
-  // test
-  // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
+  // -------------------------
+  // Products & Pricing
+  // -------------------------
   Route::get('/products/{dataTypeSlug}', [ProductController::class, 'index']);
   Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
-  Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 
   // -------------------------
   // Cart
   // -------------------------
-  // CRUD
   Route::post('/cart', [CartController::class, 'store']);
   Route::get('/cart', [CartController::class, 'show']);
   Route::put('/cart', [CartController::class, 'update']);
   Route::delete('/cart/items', [CartController::class, 'remove']);
   Route::delete('/cart', [CartController::class, 'clear']);
 
-  // Payment Gateways
+  // -------------------------
+  // Payments
+  // -------------------------
   Route::post('/payments', [PaymentController::class, 'charge']);
-  Route::post('/payments/{payment}/refund', [PaymentController::class, 'refund']);
 
-  // order
+  // الاسترداد — إدارية
+  Route::post('/payments/{payment}/refund', [PaymentController::class, 'refund'])
+    ->middleware('permission:payment.refund');
 
+  // -------------------------
+  // Orders
+  // -------------------------
+  // خاصة بالمستخدم
   Route::post('/orders/from-cart', [OrderController::class, 'store']);
   Route::get('/orders', [OrderController::class, 'index']);
-  Route::get('/allorders', [OrderController::class, 'adminIndex']);
   Route::get('/orders/{orderId}', [OrderController::class, 'show']);
-  Route::patch('/orders/{orderId}/status', [OrderController::class, 'updateStatus']);
+  // إدارية
+  Route::get('/allorders', [OrderController::class, 'adminIndex'])
+    ->middleware('permission:order.viewAll');
+
+  Route::patch('/orders/{orderId}/status', [OrderController::class, 'updateStatus'])
+    ->middleware('permission:order.updateStatus');
+
+  // -------------------------
+  // Return Requests
+  // -------------------------
+  // خاصة بالمستخدم
   Route::post('/return-requests', [ReturnRequestController::class, 'store']);
-  Route::patch('/admin/return-requests/{id}', [ReturnRequestController::class, 'update']);
-  Route::get('/admin/return-requests', [ReturnRequestController::class, 'index']);
-  
-  // test
-  // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
-  // Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
-  // Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
+  // إدارية
+  Route::get('/admin/return-requests', [ReturnRequestController::class, 'index'])
+    ->middleware('permission:return.viewAll');
+
+  Route::patch('/admin/return-requests/{id}', [ReturnRequestController::class, 'update'])
+    ->middleware('permission:return.update');
 });

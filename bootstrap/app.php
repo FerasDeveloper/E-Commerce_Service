@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->alias([
       'resolve.project' => \App\Http\Middleware\ResolveProject::class,
       'auth.user' => \App\Http\Middleware\AuthUserMiddleware::class,
+      'permission' => \App\Http\Middleware\CheckPermission::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions): void {
