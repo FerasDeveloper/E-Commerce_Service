@@ -146,7 +146,7 @@ class EcommerceDataSeeder extends Seeder
       $order = Order::query()->create([
         'user_id' => 1,
         'status' => 'paid',
-         'project_id' => 5,
+        'project_id' => 5,
         'total_price' => $cartTotal,
         'currency' => 'USD',
         'address' => json_encode([
@@ -170,16 +170,16 @@ class EcommerceDataSeeder extends Seeder
         ]);
       }
 
-      Payment::query()->create([
-        'order_id' => $order->id,
-        'method' => 'card',
-        'status' => 'paid',
-        'transaction_id' => 'TX-' . $order->id,
-        'amount' => $cartTotal,
-        'paid_at' => $now,
-        'created_at' => $now,
-        'updated_at' => $now,
-      ]);
+      // Payment::query()->create([
+      //   'order_id' => $order->id,
+      //   'method' => 'card',
+      //   'status' => 'paid',
+      //   'transaction_id' => 'TX-' . $order->id,
+      //   'amount' => $cartTotal,
+      //   'paid_at' => $now,
+      //   'created_at' => $now,
+      //   'updated_at' => $now,
+      // ]);
     });
   }
 }

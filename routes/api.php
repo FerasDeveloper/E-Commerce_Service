@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PricingController;
 use App\Http\Controllers\ReturnRequestController;
@@ -42,6 +43,9 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   Route::delete('/cart/items', [CartController::class, 'remove']);
   Route::delete('/cart', [CartController::class, 'clear']);
 
+  // Payment Gateways
+  Route::post('/payments', [PaymentController::class, 'charge']);
+  Route::post('/payments/{payment}/refund', [PaymentController::class, 'refund']);
 
   // order
 
