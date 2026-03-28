@@ -2,10 +2,14 @@
 
 namespace App\Domains\E_Commerce\Services;
 
+use App\Domains\E_Commerce\Actions\Order\AdminListOrdersAction;
 use App\Domains\E_Commerce\Actions\Order\CreateOrderFromCartAction;
 use App\Domains\E_Commerce\Actions\Order\EnrichOrderItemsAction;
+use App\Domains\E_Commerce\Actions\Order\GetOrderDetailsAction;
 use App\Domains\E_Commerce\Actions\Order\ListOrdersAction;
+use App\Domains\E_Commerce\Actions\Order\UpdateOrderStatusAction;
 use App\Domains\E_Commerce\DTOs\Order\CreateOrderDTO;
+use App\Domains\E_Commerce\DTOs\Order\UpdateOrderStatusDTO;
 use App\Domains\E_Commerce\Repositories\Interfaces\Order\OrderRepositoryInterface;
 
 class OrderService
@@ -14,7 +18,10 @@ class OrderService
     protected OrderRepositoryInterface $orderRepo,
     protected CreateOrderFromCartAction $createFromCartAction,
     protected ListOrdersAction $listOrdersAction,
-    protected EnrichOrderItemsAction $enrichOrderItemsAction
+    protected EnrichOrderItemsAction $enrichOrderItemsAction,
+    protected AdminListOrdersAction $adminListOrdersAction,
+    protected GetOrderDetailsAction $getOrderDetailsAction,
+    protected UpdateOrderStatusAction $updateOrderStatusAction
   ) {}
 
   public function createFromCart(CreateOrderDTO $dto)
@@ -22,6 +29,7 @@ class OrderService
     return $this->createFromCartAction->execute($dto);
   }
 
+  // للحذف
   public function getOrder(int $orderId, int $projectId, int $userId)
   {
     return $this->orderRepo->findByIdForUser($orderId, $projectId, $userId);
@@ -37,5 +45,26 @@ class OrderService
     $orders = $this->listOrdersAction->execute($projectId, $userId);
 
     return $this->enrichOrderItemsAction->execute($orders);
+  }
+
+  public function adminListOrders(int $projectId, array $filters = [])
+  {
+    $orders = $this->adminListOrdersAction->execute($projectId, $filters);
+
+    return $this->enrichOrderItemsAction->execute($orders);
+  }
+
+  public function getOrderDetails(int $orderId, int $projectId, int $userId)
+  {
+    $order = $this->getOrderDetailsAction->execute($orderId, $projectId, $userId);
+
+    return $this->enrichOrderItemsAction->execute(collect([$order]))->first();
+  }
+
+  public function updateOrderStatus(int $orderId, int $projectId, string $status)
+  {
+    return $this->updateOrderStatusAction->execute(
+      new UpdateOrderStatusDTO($orderId, $projectId, $status)
+    );
   }
 }

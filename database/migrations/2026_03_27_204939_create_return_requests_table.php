@@ -11,21 +11,24 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('orders', function (Blueprint $table) {
+    Schema::create('return_requests', function (Blueprint $table) {
       $table->id();
-      $table->unsignedBigInteger('user_id');
-      $table->unsignedBigInteger('project_id');
-      $table->string('status')->default('pending');
-      $table->decimal('total_price', 10, 2);
-      $table->string('currency')->default('USD');
 
-      $table->json('address')->nullable();
+      $table->unsignedBigInteger('user_id');
+      $table->unsignedBigInteger('order_id');
+      $table->unsignedBigInteger('order_item_id');
+
+      $table->text('description')->nullable();
+      $table->integer('quantity')->nullable(); // 🔥 مهم لو بده يرجع جزء
+      $table->unsignedBigInteger('project_id')->index();
+      $table->string('status')->default('pending');
+      // pending | approved | rejected
 
       $table->timestamps();
 
       $table->index('user_id');
-      $table->index('status');
-      $table->index('project_id');
+      $table->index('order_id');
+      $table->index('order_item_id');
     });
   }
 
@@ -34,6 +37,6 @@ return new class extends Migration
    */
   public function down(): void
   {
-    Schema::dropIfExists('orders');
+    Schema::dropIfExists('return_requests');
   }
 };

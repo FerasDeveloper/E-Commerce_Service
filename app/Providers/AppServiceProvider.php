@@ -8,12 +8,14 @@ use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferPriceRepositoryEloq
 use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferRepositorEloquent;
 use App\Domains\E_Commerce\Repositories\Eloquent\Order\EloquentOrderItemRepository;
 use App\Domains\E_Commerce\Repositories\Eloquent\Order\EloquentOrderRepository;
+use App\Domains\E_Commerce\Repositories\Eloquent\ReturnRequest\EloquentReturnRequestRepository;
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartItemRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Order\OrderItemRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Order\OrderRepositoryInterface;
+use App\Domains\E_Commerce\Repositories\Interfaces\ReturnRequest\ReturnRequestRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
     $this->app->bind(OrderRepositoryInterface::class, EloquentOrderRepository::class);
     $this->app->bind(OrderItemRepositoryInterface::class, EloquentOrderItemRepository::class);
+    $this->app->bind(ReturnRequestRepositoryInterface::class, EloquentReturnRequestRepository::class);
 
   }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PricingController;
+use App\Http\Controllers\ReturnRequestController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -46,7 +47,13 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
 
   Route::post('/orders/from-cart', [OrderController::class, 'store']);
   Route::get('/orders', [OrderController::class, 'index']);
-
+  Route::get('/allorders', [OrderController::class, 'adminIndex']);
+  Route::get('/orders/{orderId}', [OrderController::class, 'show']);
+  Route::patch('/orders/{orderId}/status', [OrderController::class, 'updateStatus']);
+  Route::post('/return-requests', [ReturnRequestController::class, 'store']);
+  Route::patch('/admin/return-requests/{id}', [ReturnRequestController::class, 'update']);
+  Route::get('/admin/return-requests', [ReturnRequestController::class, 'index']);
+  
   // test
   // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
   // Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
