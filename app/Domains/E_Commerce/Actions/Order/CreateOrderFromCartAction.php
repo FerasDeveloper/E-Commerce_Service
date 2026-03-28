@@ -147,6 +147,15 @@ class CreateOrderFromCartAction
       // ✅ هون الإضافة الجديدة
       $this->cartRepo->delete($cart->id);
 
+      // event(new \App\Events\SystemLogEvent(
+      //   module: 'ecommerce',
+      //   eventType: 'order_created',
+      //   userId: $dto->user_id,
+      //   entityType: 'order',
+      //   entityId: $order->id,
+      //   newValues: $order->toArray()
+      // ));
+
       return $this->orderRepo->loadItems($order);
     });
   }
