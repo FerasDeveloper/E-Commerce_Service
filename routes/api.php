@@ -10,7 +10,7 @@ use App\Http\Controllers\ReturnRequestController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(function () {
+Route::middleware(['resolve.project', 'auth.user', 'ecommerce.enabled'])->prefix('ecommerce')->group(function () {
   // -------------------------
   // Offers
   // -------------------------
@@ -58,8 +58,4 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   Route::patch('/admin/return-requests/{id}', [ReturnRequestController::class, 'update']);
   Route::get('/admin/return-requests', [ReturnRequestController::class, 'index']);
   
-  // test
-  // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
-  // Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
-  // Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
 });

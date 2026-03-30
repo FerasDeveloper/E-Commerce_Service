@@ -21,8 +21,11 @@ class ResolveProject
 
     $project = $this->resolver->resolveProject();
 
-    $request->merge(['project_id' => $project['id']]);
-
+    // $request->merge(['project_id' => $project['id']]);
+    $request->merge([
+      'project_id' => $project['id'],
+      'project' => $project // 🔥 مهم
+    ]);
     return $next($request);
   }
 }
