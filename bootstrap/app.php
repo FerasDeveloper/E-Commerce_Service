@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
       'resolve.project' => \App\Http\Middleware\ResolveProject::class,
       'auth.user' => \App\Http\Middleware\AuthUserMiddleware::class,
       'ecommerce.enabled' => \App\Http\Middleware\EnsureEcommerceEnabled::class,
+      'permission' => \App\Http\Middleware\CheckPermission::class,
     ]);
   })
   ->withExceptions(function (Exceptions $exceptions): void {
