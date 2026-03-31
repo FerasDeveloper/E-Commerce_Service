@@ -20,8 +20,6 @@ return new class extends Migration
 
       $table->unsignedInteger('item_id');
       $table->integer('quantity');
-      $table->decimal('price', 10, 2);
-      $table->decimal('subtotal', 10, 2);
       $table->timestamps();
 
       $table->index('cart_id');

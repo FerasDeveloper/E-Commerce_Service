@@ -30,13 +30,15 @@ class EloquentCartItemRepository implements CartItemRepositoryInterface
     $cartItem->delete();
   }
 
+  public function deleteByIds(int $cart_id, array $item_ids)
+  {
+    CartItem::where('cart_id', $cart_id)
+      ->whereIn('item_id', $item_ids)
+      ->delete();
+  }
+
   public function deleteByCartId(int $cart_id)
   {
     return CartItem::where('cart_id', $cart_id)->delete();
-  }
-
-  public function getRealPrice(int $item_id)
-  {
-    return 100.0;
   }
 }

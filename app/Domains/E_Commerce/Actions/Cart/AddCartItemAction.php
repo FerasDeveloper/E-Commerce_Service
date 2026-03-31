@@ -9,8 +9,8 @@ use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
 class AddCartItemAction
 {
   public function __construct(
-    protected CartRepositoryInterface $cartRepo,
-    protected CartItemRepositoryInterface $cartItemRepo
+    protected CartRepositoryInterface     $cartRepo,
+    protected CartItemRepositoryInterface $cartItemRepo,
   ) {}
 
   public function execute(AddCartItemsDTO $dto)
@@ -18,28 +18,22 @@ class AddCartItemAction
     $cart = $this->cartRepo->getOrCreate($dto->project_id, $dto->user_id);
 
     foreach ($dto->items as $item) {
-
       $item_id  = $item['item_id'];
       $quantity = $item['quantity'];
 
       $cartItem = $this->cartItemRepo->findByCartAndItem($cart->id, $item_id);
 
       if ($cartItem) {
-        $newQuantity = $cartItem->quantity + $quantity;
-
+        // العنصر موجود → نجمع الكميات
         $this->cartItemRepo->update($cartItem, [
-          'quantity' => $newQuantity,
-          'subtotal' => $cartItem->price * $newQuantity,
+          'quantity' => $cartItem->quantity + $quantity,
         ]);
       } else {
-        $price = $this->cartItemRepo->getRealPrice($item_id);
-
+        // عنصر جديد → نضيفه بدون سعر
         $this->cartItemRepo->create([
           'cart_id'  => $cart->id,
           'item_id'  => $item_id,
           'quantity' => $quantity,
-          'price'    => $price,
-          'subtotal' => $price * $quantity,
         ]);
       }
     }
