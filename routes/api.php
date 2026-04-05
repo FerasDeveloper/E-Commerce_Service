@@ -58,11 +58,17 @@ Route::middleware(['resolve.project', 'auth.user', 'ecommerce.enabled'])->prefix
   // -------------------------
   // Payments
   // -------------------------
-  Route::post('/payments', [PaymentController::class, 'charge']);
-
+  Route::post('/payments/pay', [PaymentController::class, 'charge']);
+  Route::post('/payments/installment', [PaymentController::class, 'payInstallment']);
   // الاسترداد — إدارية
-  Route::post('/payments/{payment}/refund', [PaymentController::class, 'refund'])
+  Route::post('/payments/refund', [PaymentController::class, 'refund'])
     ->middleware('permission:payment.refund');
+
+
+  // Route::post('/payments', [PaymentController::class, 'charge']);
+  // الاسترداد — إدارية
+  // Route::post('/payments/{payment}/refund', [PaymentController::class, 'refund'])
+  //   ->middleware('permission:payment.refund');
 
   // -------------------------
   // Orders
@@ -86,7 +92,7 @@ Route::middleware(['resolve.project', 'auth.user', 'ecommerce.enabled'])->prefix
 
   // Route::patch('/admin/return-requests/{id}', [ReturnRequestController::class, 'update']);
   // Route::get('/admin/return-requests', [ReturnRequestController::class, 'index']);
-  
+
   // إدارية
   Route::get('/admin/return-requests', [ReturnRequestController::class, 'index'])
     ->middleware('permission:return.viewAll');
