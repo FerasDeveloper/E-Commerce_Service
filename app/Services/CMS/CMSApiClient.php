@@ -4,6 +4,8 @@ namespace App\Services\CMS;
 
 use Illuminate\Support\Facades\Http;
 use App\Domains\Core\Traits\HasProjectHeaders;
+use App\Domains\Payment\DTOs\PayInstallmentDTO;
+use App\Domains\Payment\DTOs\PaymentDTO;
 
 class CMSApiClient
 {
@@ -226,5 +228,36 @@ class CMSApiClient
     }
 
     return $response->json()['entries']; // 🔥 مهم
+  }
+
+  public function processPayment(PaymentDTO $dto): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/payments/pay", $dto);
+
+    if ($response->failed()) {
+      $error = $response->json('message')
+        ?? substr($response->body(), 0, 200);
+
+      throw new \Exception("Failed to process payment in CMS: " . $error);
+    }
+
+    return $response->json();
+  }
+
+  public function payInstallment(PayInstallmentDTO $data): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/payments/installment", $data);
+
+    if ($response->failed()) {
+      throw new \Exception(
+        $response->json('message') ?? 'Installment payment failed.'
+      );
+    }
+
+    return $response->json();
   }
 }

@@ -8,8 +8,12 @@ use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferPriceRepositoryEloq
 use App\Domains\E_Commerce\Repositories\Eloquent\Offers\OfferRepositorEloquent;
 use App\Domains\E_Commerce\Repositories\Eloquent\Order\EloquentOrderItemRepository;
 use App\Domains\E_Commerce\Repositories\Eloquent\Order\EloquentOrderRepository;
+
 use App\Domains\E_Commerce\Repositories\Eloquent\Wishlist\WishlistItemRepository;
 use App\Domains\E_Commerce\Repositories\Eloquent\Wishlist\WishlistRepository;
+
+use App\Domains\E_Commerce\Repositories\Eloquent\ReturnRequest\EloquentReturnRequestRepository;
+
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartItemRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Offers\OfferPriceRepositoryInterface;
@@ -18,8 +22,12 @@ use App\Domains\Payment\Repositories\EloquentPaymentRepository;
 use App\Domains\Payment\Repositories\PaymentRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Order\OrderItemRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Order\OrderRepositoryInterface;
+
 use App\Domains\E_Commerce\Repositories\Interfaces\Wishlist\WishlistItemRepositoryInterface;
 use App\Domains\E_Commerce\Repositories\Interfaces\Wishlist\WishlistRepositoryInterface;
+
+use App\Domains\E_Commerce\Repositories\Interfaces\ReturnRequest\ReturnRequestRepositoryInterface;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -36,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
     $this->app->bind(PaymentRepositoryInterface::class, EloquentPaymentRepository::class);
     $this->app->bind(OrderRepositoryInterface::class, EloquentOrderRepository::class);
     $this->app->bind(OrderItemRepositoryInterface::class, EloquentOrderItemRepository::class);
+    $this->app->bind(ReturnRequestRepositoryInterface::class, EloquentReturnRequestRepository::class);
 
     $this->app->bind(WishlistRepositoryInterface::class, WishlistRepository::class);
     $this->app->bind(WishlistItemRepositoryInterface::class, WishlistItemRepository::class);

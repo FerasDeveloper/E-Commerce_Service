@@ -15,7 +15,6 @@ return new class extends Migration
       $table->id();
       $table->unsignedInteger('project_id');
       $table->unsignedInteger('user_id');
-      $table->text('notes')->nullable();
       $table->timestamps();
 
       $table->unique(['project_id', 'user_id']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domains\E_Commerce\DTOs\Order\CreateOrderDTO;
 use App\Domains\E_Commerce\Requests\CreateOrderRequest;
+use App\Domains\E_Commerce\Requests\UpdateOrderStatusRequest;
 use App\Domains\E_Commerce\Services\OrderService;
 use Illuminate\Http\Request;
 
@@ -39,12 +40,50 @@ class OrderController extends Controller
   }
 
 
+  public function adminIndex(Request $request)
+  {
+    $projectId = $request->project_id;
+
+    $filters = [
+      'status' => $request->query('status'),
+      'user_id' => $request->query('user_id'),
+    ];
+
+    $orders = $this->orderService->adminListOrders($projectId, $filters);
+
+    return response()->json([
+      'message' => 'Admin orders fetched successfully',
+      'data' => $orders
+    ]);
+  }
+
+
   public function show(Request $request, int $orderId)
   {
-    $order = $this->orderService->getOrder($orderId, $request->project_id, $request->attributes->get('auth_user')['id']);
+    $userId = $request->attributes->get('auth_user')['id'];
+    $projectId = $request->project_id;
+
+    $order = $this->orderService->getOrderDetails($orderId, $projectId, $userId);
 
     return response()->json([
       'message' => 'Order fetched successfully',
+      'data' => $order
+    ]);
+  }
+
+
+  public function updateStatus(UpdateOrderStatusRequest $request, int $orderId)
+  {
+    $projectId = $request->project_id;
+
+    $order = $this->orderService->updateOrderStatus(
+      $orderId,
+      $projectId,
+      $request->status
+    );
+
+    return response()->json([
+      'message' => 'Order status updated successfully',
       'data' => $order
     ]);
   }

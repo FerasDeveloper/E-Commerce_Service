@@ -24,6 +24,8 @@ return new class extends Migration
       $table->timestamps();
 
       $table->index('user_id');
+      $table->index('status');
+      $table->index('project_id');
     });
   }
 
