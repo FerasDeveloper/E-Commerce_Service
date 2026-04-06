@@ -6,6 +6,8 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PricingController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\WishlistItemController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -55,4 +57,23 @@ Route::middleware(['resolve.project', 'auth.user'])->prefix('ecommerce')->group(
   // Route::get('/{collectionSlug}/products', [ProductController::class, 'index']);
   // Route::post('/pricing/calculate', [PricingController::class, 'calculate']);
   // Route::post('/offers/{collectionSlug}/subscribe', [OfferController::class, 'subscribe']);
+
+
+    // Wishlist:
+    Route::prefix('wishlists')->group(function () {
+        Route::get('/', [WishlistController::class, 'index']);
+        Route::post('/', [WishlistController::class, 'store']);
+        Route::get('/shared/{shareToken}', [WishlistController::class, 'showSharedWishlist']);
+
+        Route::get('/{wishlistId}', [WishlistController::class, 'show']);
+        Route::put('/{wishlistId}', [WishlistController::class, 'update']);
+        Route::delete('/{wishlistId}', [WishlistController::class, 'destroy']);
+
+        Route::post('/{wishlistId}/share-link', [WishlistController::class, 'generateShareLink']);
+
+        Route::post('/{wishlistId}/items', [WishlistItemController::class, 'store']);
+        Route::delete('/{wishlistId}/items/{itemId}', [WishlistItemController::class, 'destroy']);
+        Route::post('/{wishlistId}/items/reorder', [WishlistItemController::class, 'reorder']);
+        Route::post('/{wishlistId}/items/{itemId}/move-to-cart', [WishlistItemController::class, 'moveToCart']);
+    });
 });

@@ -132,16 +132,49 @@ class EcommerceDataSeeder extends Seeder
         ]);
       }
 
-      $wishlist = Wishlist::query()->firstOrCreate(['user_id' => 1]);
-      WishlistItem::query()->where('wishlist_id', $wishlist->id)->delete();
-      foreach (array_slice($productEntryIds, 0, 2) as $productId) {
-        WishlistItem::query()->create([
-          'wishlist_id' => $wishlist->id,
-          'product_id' => $productId,
-          'created_at' => $now,
-          'updated_at' => $now,
+    //   $wishlist = Wishlist::query()->firstOrCreate(['user_id' => 1]);
+    //   WishlistItem::query()->where('wishlist_id', $wishlist->id)->delete();
+    //   foreach (array_slice($productEntryIds, 0, 2) as $productId) {
+    //     WishlistItem::query()->create([
+    //       'wishlist_id' => $wishlist->id,
+    //       'product_id' => $productId,
+    //       'created_at' => $now,
+    //       'updated_at' => $now,
+    //     ]);
+    //   }
+
+    $wishlist = Wishlist::query()->firstOrCreate(
+        [
+            'user_id' => 1,
+            'name' => 'My Wishlist', // مطلوب بسبب unique constraint
+        ],
+        [
+            'guest_token' => null,
+            'is_default' => true,
+            'visibility' => 'private',
+            'is_shareable' => false,
+            'share_token' => null,
+        ]
+    );
+
+    // حذف العناصر القديمة
+    $wishlist->items()->delete();
+
+    // إضافة عناصر جديدة
+    foreach (array_slice($productEntryIds, 0, 2) as $index => $productId) {
+        $wishlist->items()->create([
+            'product_id' => $productId,
+            'variant_id' => null,
+            'sort_order' => $index,
+            'added_from_cart' => false,
+            'product_snapshot' => null,
+            'price_when_added' => null,
+            'notify_on_price_drop' => false,
+            'notify_on_back_in_stock' => false,
+            'created_at' => $now,
+            'updated_at' => $now,
         ]);
-      }
+    }
 
       $order = Order::query()->create([
         'user_id' => 1,

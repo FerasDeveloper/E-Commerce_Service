@@ -18,8 +18,17 @@ class AuthApiClient
     $response = Http::withToken($token)
       ->get("{$this->baseUrl}/api/my-profile");
 
-    if (!$response->successful()) {
-      dd($response->status(), $response->body());
+    // if (!$response->successful()) {
+    //   dd($response->status(), $response->body());
+    // }
+
+    if ($response->failed()) {
+        $error = $response->json('message')
+            ?? substr($response->body(), 0, 200);
+
+        throw new \Exception(
+            "Failed to fetch user from auth service: " . $error
+        );
     }
 
     $user = $response->json()['data'];
