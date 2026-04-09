@@ -3,6 +3,7 @@
 namespace App\Domains\E_Commerce\Actions\Order;
 
 use App\Domains\E_Commerce\Actions\Pricing\EnrichEntriesWithPricesAction;
+use App\Domains\E_Commerce\Actions\Pricing\FetchEntriesByIdsAction;
 
 class EnrichOrderItemsAction
 {
@@ -42,16 +43,22 @@ class EnrichOrderItemsAction
     foreach ($orders as $order) {
 
       // 🔥 1. جهز entries بالشكل المطلوب
-      $entries = collect($order->items)->map(function ($item) {
-        return [
-          'id' => $item->product_id,
+      // $entries = collect($order->items)->map(function ($item) {
+      //   return [
+      //     'id' => $item->product_id,
 
-          // ✅ أهم سطر
-          'values' => [
-            'price' => $item->price
-          ]
-        ];
-      })->toArray();
+      //     // ✅ أهم سطر
+      //     'values' => [
+      //       'price' => $item->price
+      //     ]
+      //   ];
+      // })->toArray();
+
+      $itemIds = collect($order->items)->pluck('product_id')->toArray();
+
+      // 🔥 نفس الكارت
+      $entries = app(FetchEntriesByIdsAction::class)
+        ->execute($itemIds);
 
       // 🔥 2. استدعاء pricing
       $enriched = $this->pricingAction->execute($entries);

@@ -12,7 +12,7 @@ class EnrichEntriesWithPricesAction
 
   public function execute(array $entries): array
   {
-    
+
     $entryIds = collect($entries)->pluck('id')->toArray();
 
     // 🔹 1. جلب الأسعار
@@ -21,7 +21,6 @@ class EnrichEntriesWithPricesAction
     // 🔥 جديد: عروض المستخدم (من user_offers)
 
     $userPrices = $this->offerRepo->getUserPrices($entryIds);
-
 
 
     return collect($entries)->map(function ($entry) use ($autoPrices, $userPrices) {
