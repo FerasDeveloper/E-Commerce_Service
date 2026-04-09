@@ -124,6 +124,79 @@ class EcommerceDataSeeder extends Seeder
         ]);
       }
 
+
+    //   $wishlist = Wishlist::query()->firstOrCreate(['user_id' => 1]);
+    //   WishlistItem::query()->where('wishlist_id', $wishlist->id)->delete();
+    //   foreach (array_slice($productEntryIds, 0, 2) as $productId) {
+    //     WishlistItem::query()->create([
+    //       'wishlist_id' => $wishlist->id,
+    //       'product_id' => $productId,
+    //       'created_at' => $now,
+    //       'updated_at' => $now,
+    //     ]);
+    //   }
+
+    $wishlist = Wishlist::query()->firstOrCreate(
+        [
+            'user_id' => 1,
+            'name' => 'My Wishlist', // مطلوب بسبب unique constraint
+        ],
+        [
+            'guest_token' => null,
+            'is_default' => true,
+            'visibility' => 'private',
+            'is_shareable' => false,
+            'share_token' => null,
+        ]
+    );
+
+    // حذف العناصر القديمة
+    $wishlist->items()->delete();
+
+    // إضافة عناصر جديدة
+    foreach (array_slice($productEntryIds, 0, 2) as $index => $productId) {
+        $wishlist->items()->create([
+            'product_id' => $productId,
+            'variant_id' => null,
+            'sort_order' => $index,
+            'added_from_cart' => false,
+            'product_snapshot' => null,
+            'price_when_added' => null,
+            'notify_on_price_drop' => false,
+            'notify_on_back_in_stock' => false,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+    }
+
+      $order = Order::query()->create([
+        'user_id' => 1,
+        'status' => 'paid',
+        'project_id' => 5,
+        'total_price' => $cartTotal,
+        'currency' => 'USD',
+        'address' => json_encode([
+          'country' => 'SY',
+          'city' => 'Damascus',
+          'street' => 'Main St',
+        ]),
+        'created_at' => $now,
+        'updated_at' => $now,
+      ]);
+
+      foreach (CartItem::query()->where('cart_id', $cart->id)->get() as $item) {
+        OrderItem::query()->create([
+          'order_id' => $order->id,
+          'product_id' => $item->item_id,
+          'price' => $item->price,
+          'quantity' => $item->quantity,
+          'total' => $item->subtotal,
+          'created_at' => $now,
+          'updated_at' => $now,
+        ]);
+      }
+
+      
       // ─── Wishlist ─────────────────────────────────────────────────────
 
       $wishlist = Wishlist::query()->firstOrCreate(['user_id' => 1]);
@@ -138,6 +211,7 @@ class EcommerceDataSeeder extends Seeder
           'updated_at'  => $now,
         ]);
       }
+
       // Payment::query()->create([
       //   'order_id' => $order->id,
       //   'method' => 'card',

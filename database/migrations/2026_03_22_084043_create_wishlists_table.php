@@ -12,9 +12,17 @@ return new class extends Migration
   public function up(): void
   {
     Schema::create('wishlists', function (Blueprint $table) {
-      $table->id();
-      $table->unsignedBigInteger('user_id');
-      $table->timestamps();
+        $table->id();
+        $table->unsignedBigInteger('user_id')->nullable()->index();
+        $table->string('guest_token')->nullable()->index();
+        $table->string('name');
+        $table->boolean('is_default')->default(false);
+        $table->enum('visibility', ['private', 'public'])->default('private');
+        $table->string('share_token')->nullable()->unique();
+        $table->boolean('is_shareable')->default(false);
+        $table->timestamps();
+        $table->unique(['user_id', 'name']);
+        $table->unique(['guest_token', 'name']);
     });
   }
 
