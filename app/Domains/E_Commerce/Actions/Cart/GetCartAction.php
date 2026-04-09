@@ -5,6 +5,7 @@ namespace App\Domains\E_Commerce\Actions\Cart;
 use App\Domains\E_Commerce\Actions\Pricing\EnrichEntriesWithPricesAction;
 use App\Domains\E_Commerce\Actions\Pricing\FetchEntriesByIdsAction;
 use App\Domains\E_Commerce\Repositories\Interfaces\Cart\CartRepositoryInterface;
+use App\Services\CMS\CMSApiClient;
 
 class GetCartAction
 {
@@ -12,6 +13,7 @@ class GetCartAction
     protected CartRepositoryInterface       $cartRepo,
     protected FetchEntriesByIdsAction       $fetchEntries,
     protected EnrichEntriesWithPricesAction $enrichPrices,
+    protected CMSApiClient                  $cms
   ) {}
 
   public function execute(int $project_id, int $user_id): array
@@ -40,11 +42,19 @@ class GetCartAction
     // 4 — تحويل إلى map لسهولة الوصول
     $entriesMap = collect($enrichedEntries)->keyBy('id');
 
-    // 5 — بناء الـ response مع السعر الحالي
-    $items = $cart->items->map(function ($cartItem) use ($entriesMap) {
+    // 5 — جلب حالة المخزون لكل العناصر دفعة واحدة
+    $stockMap = $this->cms->getStockStatus($itemIds);
+
+    // 6 — بناء الـ response مع السعر الحالي
+    $items = $cart->items->map(function ($cartItem) use ($entriesMap, $stockMap) {
       $entry    = $entriesMap[$cartItem->item_id] ?? null;
       $price    = $entry['final_price']    ?? 0;
       $subtotal = $price * $cartItem->quantity;
+
+      // حالة المخزون
+      $stock          = $stockMap[$cartItem->item_id] ?? null;
+      $availableStock = $stock['available'] ?? null;
+      $stockStatus    = $this->resolveStockStatus($availableStock, $cartItem->quantity);
 
       return [
         'cart_item_id'     => $cartItem->id,
@@ -55,6 +65,8 @@ class GetCartAction
         'subtotal'         => $subtotal,
         'is_offer_applied' => $entry['is_offer_applied'] ?? false,
         'applied_offer_id' => $entry['applied_offer_id'] ?? null,
+        'available_stock' => $availableStock,
+        'stock_status'    => $stockStatus,  // available | insufficient | out_of_stock
         'entry'            => $entry,
       ];
     });
@@ -65,5 +77,13 @@ class GetCartAction
       'total'       => $items->sum('subtotal'),
       'total_items' => $items->sum('quantity'),
     ];
+  }
+
+  private function resolveStockStatus(?int $available, int $requested): string
+  {
+    if ($available === null) return 'available';  // لا يوجد stock tracking لهذا العنصر
+    if ($available <= 0)     return 'out_of_stock';
+    if ($available < $requested) return 'insufficient';
+    return 'available';
   }
 }

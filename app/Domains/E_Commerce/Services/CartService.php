@@ -37,7 +37,13 @@ class CartService
       throw new DomainException("You don't have a cart yet");
     }
 
-    $ids = $cart['items']->pluck('item_id')->toArray();
+    $items = collect($cart['items']);
+
+    if ($items->isEmpty()) {
+      return $cart;
+    }
+
+    $ids = $items->pluck('item_id')->toArray();
     $entries = $this->cms->getEntriesByIds($ids);
 
     $entriesMap = [];
@@ -45,9 +51,10 @@ class CartService
       $entriesMap[$entry['id']] = $entry;
     }
 
-    foreach ($cart['items'] as $item) {
+    $cart['items'] = $items->map(function ($item) use ($entriesMap) {
       $item['entry'] = $entriesMap[$item['item_id']] ?? null;
-    }
+      return $item;
+    })->values()->all();
 
     return $cart;
   }

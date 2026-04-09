@@ -94,8 +94,8 @@ class OfferPriceRepositoryEloquent implements OfferPriceRepositoryInterface
 
   public function getUserPrices(array $entryIds)
   {
-    //   $userId = request()->attributes->get('auth_user')['id'];
-    $userId = authUser()['id'];
+      $userId = request()->attributes->get('auth_user')['id'];
+    // $userId = authUser()['id'];
 
     return OfferPrice::query()
       ->select('entry_id', 'final_price', 'applied_offer_id')

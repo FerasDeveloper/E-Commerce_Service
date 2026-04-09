@@ -260,4 +260,21 @@ class CMSApiClient
 
     return $response->json();
   }
+
+  public function getStockStatus(array $entryIds): array
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->post("{$this->baseUrl}/api/stock/status", [
+      'entry_ids' => $entryIds,
+    ]);
+
+    if ($response->failed()) {
+      throw new \Exception(
+        $response->json('message') ?? 'Failed to fetch stock status.'
+      );
+    }
+
+    return $response->json('data');
+  }
 }
