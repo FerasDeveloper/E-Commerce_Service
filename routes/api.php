@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PaymentController;
@@ -84,6 +85,8 @@ Route::middleware(['resolve.project', 'auth.user', 'ecommerce.enabled'])->prefix
   // إدارية
   Route::get('/allorders', [OrderController::class, 'adminIndex'])
     ->middleware('permission:order.viewAll');
+  // checkout
+  Route::post('/checkout', [CheckoutController::class, 'store']);
 
 
   // test

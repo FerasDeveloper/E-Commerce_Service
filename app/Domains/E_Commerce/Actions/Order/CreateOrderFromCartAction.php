@@ -156,12 +156,23 @@ class CreateOrderFromCartAction
 
       // 🟢 5. احسب total
       $total = 0;
-
       foreach ($cart->items as $item) {
         $entry = $entriesMap[$item->item_id] ?? null;
 
         if (!$entry) {
           throw new \Exception("Item not found in CMS: {$item->item_id}");
+        }
+        // ✅ تحقق إذا عنده stock
+        if (isset($entry['count'])||isset($entry['3'])) {
+
+          $available = (int) $entry['3'];
+          $requested = (int) $item->quantity;
+
+          if ($requested > $available) {
+            throw new \Exception(
+              "Product '{$entry['0']}' only has {$available} items available, you requested {$requested}"
+            );
+          }
         }
 
         $price = $entry['final_price'];
