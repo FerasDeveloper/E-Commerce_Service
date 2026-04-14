@@ -276,16 +276,32 @@ class CMSApiClient
 
     return $response->json('data');
   }
-  public function updateEntry(string $slug, array $data)
-  {
+  // public function updateEntry(string $slug, array $data)
+  // {
 
+  //   $response = Http::withHeaders(
+  //     $this->projectHeaders()
+  //   )->patch("{$this->baseUrl}/api/data-entries/{$slug}", $data);
+  //   if ($response->failed()) {
+  //     throw new \Exception("Failed to update entry stock");
+  //   }
+
+  //   return $response->json();
+  // }
+
+
+  public function decrementStock(array $items): void
+  {
     $response = Http::withHeaders(
       $this->projectHeaders()
-    )->patch("{$this->baseUrl}/api/data-entries/{$slug}", $data);
-    if ($response->failed()) {
-      throw new \Exception("Failed to update entry stock");
-    }
+    )->post("{$this->baseUrl}/api/stock/decrement", [
+      'items' => $items
+    ]);
 
-    return $response->json();
+    if ($response->failed()) {
+      throw new \Exception(
+        $response->json('message') ?? 'Stock update failed'
+      );
+    }
   }
 }
