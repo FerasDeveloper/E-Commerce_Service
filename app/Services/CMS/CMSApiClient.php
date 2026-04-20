@@ -184,12 +184,11 @@ class CMSApiClient
     return $response->json();
   }
 
-  public function getEntryValuesById(int $id)
+  public function getEntryValuesById(string $slug)
   {
     $response = Http::withHeaders(
       $this->projectHeaders()
-    )->get("{$this->baseUrl}/api/cms/entries/id/$id");
-
+    )->get("{$this->baseUrl}/api/cms/entries/$slug");
     if ($response->failed()) {
       $error = $response->json('message')
         ?? substr($response->body(), 0, 200);
@@ -276,5 +275,16 @@ class CMSApiClient
     }
 
     return $response->json('data');
+  }
+  public function updateEntry(int $id, array $data)
+  {
+    $response = Http::withHeaders(
+      $this->projectHeaders()
+    )->patch("{$this->baseUrl}/api/data-entries/{$id}", $data);
+    if ($response->failed()) {
+      throw new \Exception("Failed to update entry stock");
+    }
+
+    return $response->json();
   }
 }

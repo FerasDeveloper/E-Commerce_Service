@@ -23,7 +23,7 @@ class EnrichEntriesWithPricesAction
     $userPrices = $this->offerRepo->getUserPrices($entryIds);
 
 
-    return collect($entries)->map(function ($entry) use ($autoPrices, $userPrices) {
+    return collect($entries)->map(function ($entry) use ($autoPrices, $entries, $userPrices) {
 
       $entryId = $entry['id'];
 
@@ -71,6 +71,7 @@ class EnrichEntriesWithPricesAction
         'final_price' => $price,
         'is_offer_applied' => $appliedOffer !== null,
         'applied_offer_id' => $appliedOffer,
+        'slug' => $entry['slug'],
       ];
     })->toArray();
   }

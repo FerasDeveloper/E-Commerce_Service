@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Offer;
 use App\Models\OfferPrice;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserOffer;
 use App\Models\Wishlist;
@@ -169,32 +170,32 @@ class EcommerceDataSeeder extends Seeder
         ]);
     }
 
-      $order = Order::query()->create([
-        'user_id' => 1,
-        'status' => 'paid',
-        'project_id' => 5,
-        'total_price' => $cartTotal,
-        'currency' => 'USD',
-        'address' => json_encode([
-          'country' => 'SY',
-          'city' => 'Damascus',
-          'street' => 'Main St',
-        ]),
-        'created_at' => $now,
-        'updated_at' => $now,
-      ]);
+      // $order = Order::query()->create([
+      //   'user_id' => 1,
+      //   'status' => 'paid',
+      //   'project_id' => 5,
+      //   'total_price' => $cartTotal,
+      //   'currency' => 'USD',
+      //   'address' => json_encode([
+      //     'country' => 'SY',
+      //     'city' => 'Damascus',
+      //     'street' => 'Main St',
+      //   ]),
+      //   'created_at' => $now,
+      //   'updated_at' => $now,
+      // ]);
 
-      foreach (CartItem::query()->where('cart_id', $cart->id)->get() as $item) {
-        OrderItem::query()->create([
-          'order_id' => $order->id,
-          'product_id' => $item->item_id,
-          'price' => $item->price,
-          'quantity' => $item->quantity,
-          'total' => $item->subtotal,
-          'created_at' => $now,
-          'updated_at' => $now,
-        ]);
-      }
+      // foreach (CartItem::query()->where('cart_id', $cart->id)->get() as $item) {
+      //   OrderItem::query()->create([
+      //     'order_id' => $order->id,
+      //     'product_id' => $item->item_id,
+      //     'price' => $item->price,
+      //     'quantity' => $item->quantity,
+      //     'total' => $item->subtotal,
+      //     'created_at' => $now,
+      //     'updated_at' => $now,
+      //   ]);
+      // }
 
       
       // ─── Wishlist ─────────────────────────────────────────────────────
